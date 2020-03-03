@@ -54,7 +54,7 @@
 
 ### 部分垃圾回收器使用模型
 
-除Epsilon ZGC Shenandoah之外的GC都是使用逻辑分代模型，G1是逻辑分区，物理部分带。除此之外不仅逻辑分代，而且物理分代。
+除Epsilon ZGC Shenandoah之外的GC都是使用逻辑分代模型，G1是逻辑分代，物理不分代。除此之外不仅逻辑分代，而且物理分代。
 
 
 
@@ -118,27 +118,27 @@ MajorGC/FullGC：在老年代无法继续分配空间时触发，新生代老年
 
 ### Serial
 
-a stop-the-world(stw),copying collector which uses a single GC thread。工作线程在一个安全点上(safe point)停止工作，serial开始GC，现在GC使用极少。
-
-### Serial Old
-
-a stop-the-world(stw),mark-sweep-compact collector that uses a single GC thread。与serial相似，只是gc算法不一样。现在基本不用
+**新生代**收集器，采用复制算法。a stop-the-world(stw),copying collector which uses a single GC thread。工作线程在一个安全点上(safe point)停止工作，serial开始GC，现在GC使用极少。
 
 ### Parallel Scavenge
 
-a stop-the-world(stw),copying collector which uses multiple GC thread。多线程清理垃圾
-
-### Parallel Old
-
-a stop-the-world(stw),compacting collector which uses multiple GC thread。与Parallel相似
+**新生代**收集器，采用复制算法。a stop-the-world(stw),copying collector which uses multiple GC thread。多线程清理垃圾
 
 ### ParNew(Parallel New)
 
-a stop-the-world(stw),copying collector which uses multiple GC thread。Parallel Scavenge的新版本，用来配合CMS使用，默认线程数为cpu的核数。
+**新生代**收集器，采用复制算法a stop-the-world(stw),copying collector which uses multiple GC thread。Parallel Scavenge的新版本，用来配合CMS使用，默认线程数为cpu的核数。
+
+### Serial Old
+
+**老年代**收集器，采用标记整理算法。a stop-the-world(stw),mark-sweep-compact collector that uses a single GC thread。与serial相似，只是gc算法不一样。现在基本不用
+
+### Parallel Old
+
+**老年代**收集器，采用标记整理算法。a stop-the-world(stw),compacting collector which uses multiple GC thread。与Parallel相似
 
 ### CMS
 
-1.4之后诞生。Concurrent Mark Sweep,CMS是里程碑式的GC。现代服务器的内存越来越大，因此回收线程的工作时长会很大，因此stw无法被忍受。CMS会在下面详细介绍。
+**老年代**收集器，采用标记清除算法1.4之后诞生。Concurrent Mark Sweep,CMS是里程碑式的GC。现代服务器的内存越来越大，因此回收线程的工作时长会很大，因此stw无法被忍受。CMS会在下面详细介绍。
 
 ### G1
 

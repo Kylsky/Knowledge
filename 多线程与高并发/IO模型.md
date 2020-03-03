@@ -22,7 +22,9 @@ I/O模型主要分为BIO、NIO、多路复用IO以及AIO，在介绍这四种I/O
 
 简单地回顾了以下同步、异步和阻塞、非阻塞，接下来看看四种I/O模型：
 
-## BIO
+
+
+## 一、BIO
 
 BIO(Blocking I/O)，即同步阻塞I/O。图示为BIO的I/O模型：
 
