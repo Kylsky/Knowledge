@@ -1,6 +1,6 @@
 # Spring源码分析(一）——容器创建
 
-源码分析基于原文<https://blog.csdn.net/nuomizhende45/article/details/81158383>的基础做一些搬运以及自己的理解，侵删。
+源码分析基于原文<https://blog.csdn.net/nuomizhende45/article/details/81158383>的基础做一些搬运以及自己的理解，侵删。另外，本文的Spring源码版本有点古老，但是对于spring原理的核心理解基本不会影响。
 
 ## 一、概述
 
@@ -213,7 +213,7 @@ public void refresh() throws BeansException, IllegalStateException {
 
 找到之后，可以发现ConfigurableListableBeanFactory继承了ListableBeanFactory和AutowireCapableBeanFactory还有ConfigurableBeanFactory……能继承的居然都继承了，看起来这类有点万能啊……值得庆幸的是，目前**ConfigurableListableBeanFactory**还不需要进去读源码，只需要知道“BeanFactory”以及“万能”这两个关键字，不过往后看一点，关注一下obtainFreshBeanFactory()这个方法，这才是重点,因为……容器就要诞生了！
 
-**主线任务3**：找到obtainFreshBeanFactory(),然后……点进去（长文预警）
+**主线任务3**：找到obtainFreshBeanFactory(),然后……点进去
 
 ```java
 protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
