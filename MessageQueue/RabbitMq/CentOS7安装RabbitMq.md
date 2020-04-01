@@ -72,6 +72,8 @@ rabbitmq-server start
 ```
 whereis erl
 //这里每个人的安装路径可能会不同，但是默认路径应该是一样的
+rm -rf /usr/local/bin/erl
+//另外需要删除erlang的依赖库
 rm -rf /usr/local/lib/erlang/
 ```
 
@@ -85,3 +87,59 @@ rm -rf /usr/local/lib/erlang/
 rabbitmq-server start
 ```
 
+看起来启动成功了
+
+```
+RabbitMQ 3.6.15. Copyright (C) 2007-2018 Pivotal Software, Inc.
+  ##  ##      Licensed under the MPL.  See http://www.rabbitmq.com/
+  ##  ##
+  ##########  Logs: /var/log/rabbitmq/rabbit@izir3myhe921hbz.log
+  ######  ##        /var/log/rabbitmq/rabbit@izir3myhe921hbz-sasl.log
+  ##########
+              Starting broker...
+ completed with 0 plugins.
+```
+
+
+
+## 六、安装插件
+
+```
+rabbitmq-plugins enable rabbitmq_management
+```
+
+然后就能在本地15672端口查看管理界面了——localhost:15672,默认的用户名密码为guest和guest
+
+
+
+## 七、RabbitMQ添加新用户并支持远程访问
+
+### 第一步：添加 Kyle用户并设置密码
+
+```
+rabbitmqctl add_user Kyle 123456
+```
+
+### 第二步：添加 Kyle用户为administrator角色
+
+```
+rabbitmqctl set_user_tags Kyle administrator
+```
+
+### 第三步：设置 mq 用户的权限，指定允许访问的vhost以及write/read
+
+```
+rabbitmqctl set_permissions -p "/" mq ".*" ".*" ".*"
+```
+
+这样配置完成啦，如果需要开机启动rabbitmq的话，就使用如下命令：
+
+```
+/sbin/chkconfig rabbitmq-server on
+```
+
+
+
+以下是管理界面的显示：
+
+![img](http://kylescloud.top/site/pic/RabbitMqManagement.jpg)
