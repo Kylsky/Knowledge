@@ -4,6 +4,8 @@
 
 Git 是一个开源的分布式版本控制系统，通过分支管理项目的各个版本
 
+
+
 ## Git安装
 
 ### **安装依赖包**
@@ -14,6 +16,8 @@ yum install curl-devel expat-devel gettext-devel  openssl-devel zlib-devel
 
 yum -y install git-core
 
+
+
 ## git配置
 
 ### **用户信息**
@@ -23,6 +27,8 @@ git config --global user.name "kyle"
 git config --global user.email 752051085@qq.com
 
 使用global会默认对所有项目生效，若想使特定项目使用特定的配置，去掉--global即可，将会保存在当前项目的git/config下
+
+
 
 ## Git一般工作流程
 
@@ -35,6 +41,8 @@ git config --global user.email 752051085@qq.com
 4.在提交前查看修改
 
 5.提交修改
+
+
 
 ## Git常用命令
 
@@ -109,6 +117,8 @@ git config --global user.email 752051085@qq.com
 ### **git mv**
 
 用于移动或重命名一个缓存区中的文件、目录、软连接，并更新工作目录
+
+
 
 ## Git分支管理
 
@@ -222,6 +232,8 @@ merge会产生历史的分叉，而rebase可以使其成为一条直线
 
 根据名字查看日志
 
+
+
 ## Git标签
 
 ### git tag
@@ -239,6 +251,8 @@ merge会产生历史的分叉，而rebase可以使其成为一条直线
 **-s <tagName>**
 
 PGB签名标签
+
+
 
 ## Git远程仓库
 
@@ -295,6 +309,8 @@ git push -u origin master
 ### git pull [alias] [branch]
 
 git pull 则是将远程主机的最新内容拉下来后直接合并，即：git pull = git fetch + git merge，这样可能会产生冲突，需要手动解决。
+
+
 
 ## 总结
 
