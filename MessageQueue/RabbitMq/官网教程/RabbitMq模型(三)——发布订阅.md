@@ -20,7 +20,7 @@
 
 2.队列是存储消息的缓冲区。
 
-3.使用者是接收消息的用户应用程序。
+3.消费者是接收消息的用户应用程序。
 
 **RabbitMQ消息传递模型的核心思想**是，生产者从不直接向队列发送任何消息。实际上，通常情况下，生产者甚至根本不知道消息是否会被传递到任何队列。在rabbitmq中，生产者只能向交换器发送消息。交换是一件非常简单的事情。一边接收来自生产者的消息，另一边将消息推送到队列。交换器必须确切地知道如何处理它接收到的消息。它应该被附加到一个特定的队列吗?它应该被添加到许多队列中吗?或者它应该被丢弃吗？这些规则由exchange类型定义。
 
@@ -47,9 +47,9 @@ channel.exchangeDeclare("logs", "fanout");
 
 ## 三、临时队列
 
-你可能还记得以前我们使用具有特定名称的队列(hello和task_queue)能够命名一个队列对我们来说是至关重要的——我们需要将Worker指向相同的队列。当希望在生产者和消费者之间绑定同一个队列时，给队列起一个名字是很重要的。
+你可能还记得以前我们使用具有特定名称的队列(hello和task_queue)，能够命名一个队列对我们来说是至关重要的——我们需要将Worker指向相同的队列。当希望在生产者和消费者之间绑定同一个队列时，给队列起一个名字很重要。
 
-但这样的非临时队列不满足本篇将构建的日志系统，。我们想要了解所有的日志消息，而不仅仅是其中的一个子集。我们也只对当前新的消息感兴趣，而不是老消息。
+但这样的非临时队列不满足本篇将构建的日志系统，我们想要了解所有的日志消息，而不仅仅是其中的一个子集。我们也只对当前新的消息感兴趣，而不是老消息。
 
 要解决这个问题，我们需要两样东西。首先，每当我们连接到Rabbitmq时，我们需要一个新的空队列。为此，我们可以创建一个具有随机名称的队列，或者，更好的方法是让服务器为我们选择一个随机队列名称。其次，一旦我们断开消费者，队列应该被自动删除。
 
@@ -61,3 +61,116 @@ String queueName = channel.queueDeclare().getQueue();
 
 
 
+## 四、绑定队列
+
+我们已经创建了一个fanout exchange和一个临时队列。现在我们需要告诉exchange将消息发送到我们的队列。交换和队列之间的关系称为绑定关系，具体操作如下：
+
+```java
+channel.queueBind(queueName, "logs", "");
+```
+
+同时可以在命令行输入rabbitmqctl list_bindings来查看绑定情况
+
+
+
+## 五、代码演示
+
+**消息生产者**
+
+```java
+package testRabbitMq.Model3;
+
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+
+public class EmitLog {
+
+    private static final String EXCHANGE_NAME = "logs";
+
+    public static void main(String[] argv) throws Exception {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("localhost");
+        factory.setUsername("Kyle");
+        factory.setPassword("123456");
+        try (Connection connection = factory.newConnection();
+             Channel channel = connection.createChannel()) {
+            channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
+
+            String message = argv.length < 1 ? "info: Hello World!" :
+                    String.join(" ", argv);
+
+            channel.basicPublish(EXCHANGE_NAME, "", null, message.getBytes("UTF-8"));
+            System.out.println(" [x] Sent '" + message + "'");
+        }
+    }
+}
+```
+
+
+
+**消息消费者**
+
+```java
+package testRabbitMq.Model3;
+
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.DeliverCallback;
+
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+
+public class RecvLog {
+    private static final String EXCHANGE_NAME = "logs";
+
+    public static void main(String[] args) {
+        //创建连接工厂
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("localhost");
+        factory.setUsername("Kyle");
+        factory.setPassword("123456");
+        //创建连接
+        try{
+            Connection connection = factory.newConnection();
+            //创建信道
+            Channel channel = connection.createChannel();
+            //声明exchange
+            channel.exchangeDeclare(EXCHANGE_NAME,"fanout");
+            //声明队列
+            String queueName = channel.queueDeclare().getQueue();
+            //绑定队列和exchange
+            channel.queueBind(queueName,EXCHANGE_NAME,"");
+
+            //接收消息
+            System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+            DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+                String message = new String(delivery.getBody(), "UTF-8");
+                System.out.println(" [x] Received '" + message + "'");
+            };
+            //发送消息确认
+            channel.basicConsume(queueName, true, deliverCallback, consumerTag -> { });
+
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+
+
+## 六、运行测试
+
+并行启动RecvLog类，然后再启动EmitLog类，可以发现EmitLog每次发送消息时，2个Receiver都能接受到生产者发送的消息。
+
+
+
+## 七、总结
+
+不难发现，消息订阅模型与之前的工作队列模型在实现上最大的区别在于使用了exchange，于是此时消费者不再与队列直接连接，而是间接和exhcange对话，而且消息由于失去了队列间的绑定关系，消费者将直接获取任何队列中的任何消息，而且与工作队列模型不同的是，所有的消息会被所有消费者消费，而不再是抢占式的了。
+
+虽然还不明白两个模型内部的工作原理，但是我想这一定是和exchange有着很大的关系，希望能在之后的学习过程中有所领悟。
