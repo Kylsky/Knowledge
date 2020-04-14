@@ -478,7 +478,7 @@ protected void processBeanDefinition(Element ele, BeanDefinitionParserDelegate d
     	//将解析出来的bean定义存储到一个BeanDefinitionHolder实例中，核心方法，BeanDefinition正是在这个方法中被创建，点进去看到本文标题8-1
 		BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele);
 		if (bdHolder != null) {
-            //decorate，修饰的意思，就是对bean定义进行“增强”，由于这章重点关注的是bean定义如何被注册到工厂中，因此该步骤以后在进行详述
+            //decorate，修饰的意思，可以简单看一眼源码，是对bean定义加了target和一些interceptor，由于这章重点关注的是bean定义如何被注册到工厂中，因此该步骤以后在进行详述
 			bdHolder = delegate.decorateBeanDefinitionIfRequired(ele, bdHolder);
 			try {
 				// 注册最终被增强过的bean定义，点进去，看本文标题8-2
