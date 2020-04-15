@@ -87,10 +87,10 @@ public class EmitMessage {
         try {
             Connection connection = factory.newConnection();
             Channel channel = connection.createChannel();
-            //设置exchange类型
-            channel.exchangeDeclare(EXCHANGE_NAME,"direct");
-           //发送消息，指定exchange_name,routing_key,消息体
-          channel.basicPublish(EXCHANGE_NAME,"black",null,"black message".getBytes());
+            channel.exchangeDclare(EXCHANGE_NAME,"direct");
+            channel.basicPublish(EXCHANGE_NAME,"white",null,"white message".getBytes());
+            System.out.println(" [x] Sent white message");
+
         } catch (TimeoutException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -98,7 +98,6 @@ public class EmitMessage {
         }
     }
 }
-
 ```
 
 **消息消费者**
@@ -148,3 +147,12 @@ public class RecvMessage {
 }
 ```
 
+相关的测试可以参考上一篇文章，首先启动多个消费者，每个消费者可以设置相同或不同的routing_key，然后启动生产者多次生产不同routing_key的不同消息。读者可以自己观察结果。
+
+
+
+## 六、总结
+
+可以看到routing模型中的queue使用的其实还是临时队列，在测试过程中发现，这个临时队列是随着消费者的进程启动和结束而生成和消亡的。
+
+另外，当创建了两个routing_key相同，绑定exchange也相同的消费者时，再启动生产者创建对应其routing_key的消息，该消息会被同时发送到两条临时队列中，这其实跟我想象的抢占式消费消息的想法是不一样的，因为这样的情况其实更像是发布订阅，只不过不再是通过exchange来实现，而是细化到了routing_key。
