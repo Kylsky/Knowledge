@@ -18,7 +18,7 @@ cat id_rsa.pub
 选择repo和admin:repo_hook后生成，这个access只能看到一次，所以要保存好
 
 ```
-a44f224a9d1cf13ed7ad84d874fef3919928472c 
+a44f22cf13********4d874f8472c 
 ```
 
 进入系统设置创建对应凭据
