@@ -122,7 +122,7 @@ docker restart 1a2a267133a7eb239379e87d57e9732fbf494534cb9f8bd4570d676d2199d819
 
 ![img](http://kylescloud.top/site/pic/jenkinsPage.jpg)
 
-发现直接进入主界面了，那么安装到这里就完毕了~
+发现直接进入主界面了，之前的推荐插件安装直接被跳过了，看来只能手动装了。(另外我在另一台服务器上并不会出现这个问题，所以祝你好运吧)
 
 
 
