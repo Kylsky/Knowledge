@@ -126,7 +126,19 @@ docker restart 1a2a267133a7eb239379e87d57e9732fbf494534cb9f8bd4570d676d2199d819
 
 
 
-## 八、其他
+## 八、时间校准
+
+点击系统管理，选择执行脚本命令：
+
+打开 【系统管理】->【脚本命令行】运行下面的命令
+
+```
+System.setProperty('org.apache.commons.jelly.tags.fmt.timeZone', 'Asia/Shanghai')
+```
+
+
+
+## 九、其他
 
 还可以使用dockerfile和docker-compose的方法通过构建docker镜像来安装jenkins，这里就不过多介绍了，贴个链接吧
 
