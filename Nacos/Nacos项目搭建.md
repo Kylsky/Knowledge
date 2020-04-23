@@ -37,7 +37,7 @@
 
 ```java
 spring.application.name=example
-spring.cloud.nacos.config.server-addr=119.23.64.10:8848
+spring.cloud.nacos.config.server-addr=localhost:8848
 ```
 
 spring.application.name会成为Configuration的Data ID的一部分，Data ID的组成如下：
@@ -150,7 +150,7 @@ http://localhost:8080/config/get,发现返回false
 ```
 server.port=8070
 spring.application.name=service-provider
-spring.cloud.nacos.discovery.server-addr=119.23.64.10:8848
+spring.cloud.nacos.discovery.server-addr=localhost:8848
 ```
 
 

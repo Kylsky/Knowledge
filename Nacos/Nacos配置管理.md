@@ -113,9 +113,9 @@ spring:
   cloud:
     nacos:
       config.:
-        server-addr: 119.23.64.10:8848
+        server-addr: localhost:8848
       discovery:
-        server-addr: 119.23.64.10:8848
+        server-addr: localhost:8848
   application:
     name: example
   profiles:
