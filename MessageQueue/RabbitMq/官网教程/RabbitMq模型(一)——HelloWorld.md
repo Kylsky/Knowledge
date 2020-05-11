@@ -65,10 +65,11 @@ public class Send {
         try (Connection connection = factory.newConnection();
              //创建信道	
             Channel channel = connection.createChannel()) {
+            //指定队列名
             channel.queueDeclare(QUEUE_NAME, false, false, false, null);
             //设置消息
             String message = "Hello World!";
-            //发送消息
+            //发送消息，第一个参数为空字符串，表示使用默认的exchange
             channel.basicPublish("", QUEUE_NAME, null, message.getBytes(StandardCharsets.UTF_8));
             System.out.println(" [x] Sent '" + message + "'");
         }

@@ -24,7 +24,7 @@
 
 **RabbitMQ消息传递模型的核心思想**是，生产者从不直接向队列发送任何消息。实际上，通常情况下，生产者甚至根本不知道消息是否会被传递到任何队列。在rabbitmq中，生产者只能向交换器发送消息。交换是一件非常简单的事情。一边接收来自生产者的消息，另一边将消息推送到队列。交换器必须确切地知道如何处理它接收到的消息。它应该被附加到一个特定的队列吗?它应该被添加到许多队列中吗?或者它应该被丢弃吗？这些规则由exchange类型定义。
 
-rabbitmq有几种可用的交换类型:direct、topic、headers和fanout。打开rabbitmq浏览器端的dashboard全部8个exchanges以及对应的类型，也可以通过命令sudo rabbitmqctl list_exchanges查看，如下：
+rabbitmq有几种可用的交换类型:direct、topic、headers和fanout。打开rabbitmq浏览器端的dashboard默认的全部8个exchanges以及对应的类型，也可以通过命令sudo rabbitmqctl list_exchanges查看，如下：
 
 ```
 AMQP default			direct
@@ -90,16 +90,22 @@ public class EmitLog {
 
     public static void main(String[] argv) throws Exception {
         ConnectionFactory factory = new ConnectionFactory();
+        //指定host
         factory.setHost("localhost");
+        //用户名和密码
         factory.setUsername("Kyle");
         factory.setPassword("123456");
-        try (Connection connection = factory.newConnection();
-             Channel channel = connection.createChannel()) {
+        //创建连接
+        try (
+            Connection connection = factory.newConnection();
+            //创建信道
+            Channel channel = connection.createChannel()) {
+            //声明exchange，默认为非持久化
             channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
 
             String message = argv.length < 1 ? "info: Hello World!" :
                     String.join(" ", argv);
-
+			//发送message，指定队列为空字符串
             channel.basicPublish(EXCHANGE_NAME, "", null, message.getBytes("UTF-8"));
             System.out.println(" [x] Sent '" + message + "'");
         }
@@ -138,7 +144,7 @@ public class RecvLog {
             Channel channel = connection.createChannel();
             //声明exchange
             channel.exchangeDeclare(EXCHANGE_NAME,"fanout");
-            //声明队列
+            //声明临时队列
             String queueName = channel.queueDeclare().getQueue();
             //绑定队列和exchange
             channel.queueBind(queueName,EXCHANGE_NAME,"");
@@ -171,6 +177,6 @@ public class RecvLog {
 
 ## 七、总结
 
-不难发现，消息订阅模型与之前的工作队列模型在实现上最大的区别在于使用了exchange，于是此时消费者不再与队列直接连接，而是间接和exhcange对话，而且消息由于失去了队列间的绑定关系，消费者将从临时队列中获取消息，而且与工作队列模型不同的是，每个消费者好像是对应了单独一条队列(只是我的一种猜测)，因此不再是抢占式的了。
+不难发现，消息订阅模型与之前的工作队列模型在实现上最大的区别在于使用了exchange，于是此时消费者不再与队列直接连接，而是间接和exchange对话，而且消息由于失去了队列间的绑定关系，消费者将从临时队列中获取消息，而且与工作队列模型不同的是，每个消费者好像是对应了单独一条队列(只是我的一种猜测)，因此不再是抢占式的了。
 
 虽然还不明白两个模型内部的工作原理，但是我想这一定是和exchange有着很大的关系，希望能在之后的学习过程中有所领悟。

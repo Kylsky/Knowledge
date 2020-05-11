@@ -131,9 +131,9 @@ public class Worker {
 
 **RabbitMq没有任何消息超时机制。当使用者死亡时，RabbitMQ将重新传递消息。即使处理一条消息需要很长很长的时间，也没关系。**
 
-我本来以为rabbitmq重新传递消息的机制在于为消息设置超时时间，因此当Worker与mq之间的连接断开后达到超时的标准，然后mq才重新传递。看完这句话后，其实发现不然，我想rabbitmq使用类似心跳机制来直接监控了自己与Worker之间的连接，而不是间接通过判断超时时间来触发消息重发机制。
+我本来以为rabbitmq重新传递消息的机制在于为消息设置处理超时时间，因此当Worker与mq之间的连接断开后达到超时的标准，然后mq才重新传递。看完这句话后，其实发现不然，我想rabbitmq使用类似心跳机制来直接监控了自己与Worker之间的连接，而不是间接通过判断超时时间来触发消息重发机制。
 
-接下来继续回到消息确认机制——手动消息确认在默认情况下是打开的。在前面的示例中，我们通过autoAck=true标志显式地关闭了它们。一旦我们完成了一个任务，就应该将这个标志设置为false并从worker发送一个适当的确认。因此，倘若在消费者的代码中将autoAck置为了true，而在消息确认时需要手动实现重传信息，则需要注意做如下操作。另外，ack信息需要在接收消息的通道上发送，否则会产生异常。
+接下来继续回到消息确认机制——手动消息确认在默认情况下是打开的。在前面的示例中，我们通过autoAck=true标志显式地关闭了它们。一旦我们完成了一个任务，就应该将这个标志设置为false并从worker发送一个适当的确认。因此，倘若在消费者的代码中将autoAck置为了true，而在消息确认时需要手动实现重传信息，则需要注意做如下操作。另外，ack信息需要在接收消息的Channel上发送，否则会产生异常。
 
 ```
 autoAck = false
@@ -162,14 +162,14 @@ boolean durable = true;
 channel.queueDeclare("hello", durable, false, false, null);
 ```
 
-虽然这个命令本身是正确的，但是它在我们目前的设置中不能工作。那是因为我们在讲第一个模型的时候已经定义了一个名为hello的队列，它不是持久的。RabbitMQ不允许我们使用不同的参数重新定义现有队列，并将向任何试图这样做的程序返回一个错误。但是有一个快速的解决方法——让我们声明一个不同名称的不存在的队列，例如task_queue：
+虽然这个命令本身是正确的，但是它在我们目前的设置中不能工作。那是因为我们在讲第一个模型的时候已经定义了一个名为hello的队列，它不是持久的。RabbitMQ**不允许我们使用不同的参数重新定义现有队列**，并将向任何试图这样做的程序返回一个错误。但是有一个快速的解决方法——让我们声明一个不同名称的不存在的队列，例如task_queue：
 
 ```java
 boolean durable = true;
 channel.queueDeclare("task_queue", durable, false, false, null);
 ```
 
-此时task_queue就被声明为持久化的了，我们确信即使RabbitMQ重新启动，task_queue队列也不会丢失。现在，我们需要将消息声明为持久化——通过将MessageProperties(它实现了BasicProperties)设置为PERSISTENT_TEXT_PLAIN值，就像这样：
+此时task_queue就被声明为持久化的了，我们确信即使RabbitMQ重新启动，task_queue队列也不会丢失。现在，我们需要将**消息声明为持久化**——通过将MessageProperties(它实现了BasicProperties)设置为PERSISTENT_TEXT_PLAIN值，就像这样：
 
 ```java
 channel.basicPublish("", "task_queue",
