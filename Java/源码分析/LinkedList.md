@@ -149,7 +149,7 @@ private void writeObject(java.io.ObjectOutputStream s)
     }
 ````
 
-序列化对象，由于size、first、node是transient的，所谓size和所有item需要额外的write操作
+序列化对象，由于size、first、node是transient的，所以size和所有item需要额外的write操作
 
 ### readObject(java.io.ObjectInputStream s)
 

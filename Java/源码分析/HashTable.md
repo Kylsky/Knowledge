@@ -1,6 +1,6 @@
 # HashTable
 
-在理解hashTable的源码前，先说出以下结论，将其与HashMap做一下比较，这样在阅读源码时更有针对性
+在理解hashTable的源码前，先列出以下结论，将其与HashMap做一下比较，这样在阅读时更有针对性
 
 ```
 1.HashTable无论是键值对都不能存放null，而HashMap可以
@@ -10,7 +10,7 @@
 5.HashTable线程安全，而HashMap线程不安全
 ```
 
-接下来看看对应源码，由于HashTable和HashMap同样使用了哈希表，因此一些相似的操作就不贴出来了，但是需要注意尽管是相同或相似的操作，HashTable中都是使用synchronized修饰过的，因此是线程安全的。
+接下来看看对应源码，由于HashTable和HashMap同样使用了哈希表，因此一些相似的操作就不贴出来了，但是需要注意尽管是相同或相似的操作，HashTable中都是使用synchronized修饰过的，因此是线程相对安全的。
 
 
 
@@ -229,7 +229,7 @@ Hashtable中数组的长度尽量为素数或者奇数，同时Hashtable采用�
 
 采用头插法的方式效率更高。如果采用尾插法需要遍历数组将元素放置到链表的末尾，而采用头插法将结点放置到链表的头部，减少了遍历数组的时间，效率更高。
 
-Hashtable是线程安全的，所以Hashtable不需要考虑并发冲突问题，可以采用效率更高的头插法。
+Hashtable是线程相对安全的，所以Hashtable不需要考虑并发冲突问题，可以采用效率更高的头插法。
 ```
 
 

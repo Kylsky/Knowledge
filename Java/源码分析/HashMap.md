@@ -18,7 +18,7 @@ HashMap以键值对的形式存储数据，且键可以为null。这里会关键
 
 ## 二、属性
 
-### DEFAULT_INITIAL_CAPACITY
+### *DEFAULT_INITIAL_CAPACITY
 
 默认容量，16
 
@@ -26,15 +26,15 @@ HashMap以键值对的形式存储数据，且键可以为null。这里会关键
 
 最大容量，2^30
 
-### DEFAULT_LOAD_FACTOR
+### *DEFAULT_LOAD_FACTOR
 
 默认装填因子，0.75
 
-### TREEIFY_THRESHOLD
+### *TREEIFY_THRESHOLD
 
 默认值为8，在hashmap中，不同的key可能经过hash函数会映射成相同的哈希值，这些哈希值相同的数据将会放在一条链表中或一棵红黑树中存储。在初始时，这些数据会形成链表，当链表长度大于8时，链表会转换成红黑树
 
-### TREEIFY_THRESHOLD
+### *TREEIFY_THRESHOLD
 
 默认值为6，当上述的数据长度小于6时，红黑树又会转回链表以达到性能均衡
 
@@ -194,7 +194,7 @@ final void putMapEntries(Map<? extends K, ? extends V> m, boolean evict) {
 
 传入Map时先判断是否为初始化HashMap的情况，即table是否为空。
 
-若table为空，需要考虑Map的对应的threshold值是否会超出当前HashMap的threshold，因为threshold=capacity*loadFactor，所以传入的threshold为m.size()/loadFactor，考虑到后续插入产生的扩容问题，再加上1。随后将计算出的的threshold与当前实例进行比较，随后通过tableSizeFor优化容量并初始化。
+若table为空，需要考虑Map的对应的threshold值是否会超出当前HashMap的threshold，因为threshold=capacity*loadFactor，所以传入的threshold为m.size()/loadFactor，考虑计算结果可能为小数，因此为了保守计算容量加上1。随后将计算出的的threshold与当前实例进行比较，随后通过tableSizeFor优化容量并初始化。
 
 若table不为空，则判断s>threshold，若成立，则resize。
 
@@ -308,7 +308,7 @@ public V put(K key, V value) {
 
 ### pubIfAbsent(K key,V value)
 
-调用了putVal(hash(key), key, value, true, true)，若碰到key已存在的情况，若key对应value为空，则覆盖，不为空，则不覆盖
+调用了putVal(hash(key), key, value, true, true)，若碰到key已存在的情况，若key对应value为空，则覆盖，不为空，则不覆盖。
 
 ### putVal(K key,V value,boolean onlyIfAbcent,boolean evict)
 
@@ -370,7 +370,9 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
 }
 ````
 
-代码较多，以注释形式呈现
+代码较多，以注释形式呈现。如果线程A和线程B同时进行put操作，刚好这两条不同的数据hash值一样，并且该位置数据为null，所以这线程A、B都会进入第8行代码中。假设一种情况，线程A进入后还未进行数据插入时挂起，而线程B正常执行，从而正常插入数据，然后线程A获取CPU时间片，此时线程A不用再进行hash判断了，问题出现：线程A会把线程B插入的数据给**覆盖**，发生线程不安全。
+
+
 
 ### resize()
 
