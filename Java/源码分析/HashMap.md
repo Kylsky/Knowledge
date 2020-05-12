@@ -18,31 +18,31 @@ HashMap以键值对的形式存储数据，且键可以为null。这里会关键
 
 ## 二、属性
 
-### *DEFAULT_INITIAL_CAPACITY
+### *1.DEFAULT_INITIAL_CAPACITY
 
 默认容量，16
 
-### MAXIMUM_CAPACITY
+### 2.MAXIMUM_CAPACITY
 
 最大容量，2^30
 
-### *DEFAULT_LOAD_FACTOR
+### *3.DEFAULT_LOAD_FACTOR
 
 默认装填因子，0.75
 
-### *TREEIFY_THRESHOLD
+### *4.TREEIFY_THRESHOLD
 
 默认值为8，在hashmap中，不同的key可能经过hash函数会映射成相同的哈希值，这些哈希值相同的数据将会放在一条链表中或一棵红黑树中存储。在初始时，这些数据会形成链表，当链表长度大于8时，链表会转换成红黑树
 
-### *TREEIFY_THRESHOLD
+### *5.TREEIFY_THRESHOLD
 
 默认值为6，当上述的数据长度小于6时，红黑树又会转回链表以达到性能均衡
 
-### MIN_TREEIFY_CAPACITY
+### 6.MIN_TREEIFY_CAPACITY
 
 默认值为64，最小树形化容量阈值。当哈希表中的容量大于该值，则将链表树形化。为了避免进行扩容、树形化选择的冲突，这个值不能小于 4 * **TREEIFY_THRESHOLD**
 
-### Node
+### 7.Node
 
 Node是Entry的实现类，HashMap中每一个K，V键值对数据都存放在一个Entry(Node)中。Node主要有以下属性及方法
 
@@ -66,45 +66,45 @@ Node类型，用来指向下一个相同hash值的节点
 
 构造函数
 
-### table
+### 8.table
 
 table是一个Node<K,V>数组，用来表示一个HashMap对象的所有的初始节点的节点集。每一个table的项被称为桶
 
-### entrySet
+### 9.entrySet
 
 是一个Set<Map.Entry<K,V>>，存放了HashMap中的所有节点
 
-### size
+### 10.size
 
 HashMap中包含的键值对的数量
 
-### modCount
+### 11.modCount
 
 HashMap结构修改次数
 
-### threshold
+### 12.threshold
 
 threshold=capacity*loadFactor
 
 当HashMap的size大于threshold时会执行resize操作
 
-### loadFactor
+### 13.loadFactor
 
 装载因子。用于hashMap的扩容。
 
-### KeySet
+### 14.KeySet
 
 用于存放key
 
-### Value
+### 15.Value
 
 用来存放Values
 
-### EntrySet
+### 16.EntrySet
 
 用于存放Entry
 
-### TreeNode
+### 17.TreeNode
 
 红黑树的实现
 
@@ -371,8 +371,6 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
 ````
 
 代码较多，以注释形式呈现。如果线程A和线程B同时进行put操作，刚好这两条不同的数据hash值一样，并且该位置数据为null，所以这线程A、B都会进入第8行代码中。假设一种情况，线程A进入后还未进行数据插入时挂起，而线程B正常执行，从而正常插入数据，然后线程A获取CPU时间片，此时线程A不用再进行hash判断了，问题出现：线程A会把线程B插入的数据给**覆盖**，发生线程不安全。
-
-
 
 ### resize()
 
