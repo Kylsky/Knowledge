@@ -220,6 +220,16 @@ static final int tableSizeFor(int cap) {
 
 则n=cap-1=00100000(32)
 
+10
+
+00001010
+
+00000101
+
+00001111
+
+
+
 经过一系列移位后
 
 n=00111111
@@ -256,7 +266,7 @@ public V get(Object key) {
 
 通过getNode方法获取到键值对
 
-### getNode()
+### getNode(int hash, Object key)
 
 ````java
 final Node<K,V> getNode(int hash, Object key) {
@@ -360,7 +370,7 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
                 return oldValue;
             }
         }
-        ++modCount;
+        ++modCount;	
     	//判断是否需要扩容
         if (++size > threshold)
             resize();
@@ -714,6 +724,145 @@ public V merge(K key, V value,
 
 
 
+### *treeifyBin(Node<K,V>[] tab, int hash)
+
+```java
+final void treeifyBin(Node<K,V>[] tab, int hash) {
+    int n, index; Node<K,V> e;
+    //若桶为空，或桶大小未达到树形化的条件，则resize
+    if (tab == null || (n = tab.length) < MIN_TREEIFY_CAPACITY)
+        resize();
+    //达到树形化条件，判断当前桶是否为空，不为空，则开始树形化
+    else if ((e = tab[index = (n - 1) & hash]) != null) {
+        //hd为头，tl为尾
+        TreeNode<K,V> hd = null, tl = null;
+        //将Node链表转换为treeNode链表
+        do {
+            //把Node转换为TreeNode
+            TreeNode<K,V> p = replacementTreeNode(e, null);
+            if (tl == null)
+                hd = p;
+            else {
+                p.prev = tl;
+                tl.next = p;
+            }
+            tl = p;
+        } while ((e = e.next) != null);
+        if ((tab[index] = hd) != null)
+            hd.treeify(tab);
+    }
+}
+```
+
+
+
+### *treeify(Node<K,V>[] tab)
+
+```java
+final void treeify(Node<K,V>[] tab) {
+    //定义根节点
+    TreeNode<K,V> root = null;
+    //定义两个变量，x和next，x表示当前树节点
+    for (TreeNode<K,V> x = this, next; x != null; x = next) {
+        //next赋值为x.next
+        next = (TreeNode<K,V>)x.next;
+        //为x左右节点赋空值
+        x.left = x.right = null;
+        //root为空的特殊情况，表示x为根节点
+        if (root == null) {
+            x.parent = null;
+            //根节点为黑色
+            x.red = false;
+            //root变成了一颗新的树，头节点为root
+            root = x;
+        }
+        //以下情况为当前树节点不为根节点
+        else {
+            //缓存节点key
+            K k = x.key;
+            //缓存节点hash
+            int h = x.hash;
+            Class<?> kc = null;
+            //非根节点的操作，只需要考虑把当前节点往root树放就可以了，因此遍历root节点
+            for (TreeNode<K,V> p = root;;) {
+                int dir, ph;
+                //p节点key
+                K pk = p.key;
+                //p的hash比h大
+                if ((ph = p.hash) > h)
+                    dir = -1;
+                //p的hash比h小
+                else if (ph < h)
+                    dir = 1;
+                //两个hash一样大，则比较key
+                else if ((kc == null &&
+                          (kc = comparableClassFor(k)) == null) ||
+                         (dir = compareComparables(kc, k, pk)) == 0)
+                    //dir的取值和上面的hash对比一样，若dir=0，则当作-1
+                    dir = tieBreakOrder(k, pk);
+				//缓存p节点
+                TreeNode<K,V> xp = p;
+                //根据dir判断插入节点为左还是右，需要插入的节点只有在满足当前遍历的节点左子树或右子树不为空
+                if ((p = (dir <= 0) ? p.left : p.right) == null) {
+                    x.parent = xp;
+                    if (dir <= 0)
+                        xp.left = x;
+                    else
+                        xp.right = x;
+                    //树平衡操作
+                    root = balanceInsertion(root, x);
+                    break;
+                }
+            }
+        }
+    }
+    moveRootToFront(tab, root);
+}
+```
+
+
+
+## 四、Question
+
+### 1.data是什么？
+
+```
+Map map = new HashMap();
+Object data = map.put(1, 1);
+System.out.println(data);
+
+data = map.put(1, 2);
+System.out.println(data);
+
+//null报错？
+data = map.put(null, 1);
+System.out.println(data);
+```
+
+### 2.为什么HashMap使用数组加链表方式
+
+提高查询效率，减少扩容
+
+### 3.为什么HashMap需要扩容
+
+提高查询效率
+
+是数据分布更均匀
+
+减少数据碰撞
+
+### 4.为什么1.7的头插法要优化成1.8的尾插法？
+
+https://www.processon.com/view/link/5eb90cf50791290fe056f1ce
+
+### 5.HashMap可以怎么优化？
+
+initialCapacity&loadFactor
+
+### 6.Map map = new HashMap(3,0.75f); 则HashMap中的阈值是多少
+
+4
+
 ## 五、总结
 
-HashMap有关红黑树的实现以及compute*相关方法未介绍，后面有机会会补上，上述的介绍主要涉及到了HashMap关键的数据结构以及相关扩容、插入、删除等操作，有一些比较理解较为简单的地方略过了没有讲，大概就是这个样子了。
+HashMap的compute*相关方法未介绍，后面有机会会补上，上述的介绍主要涉及到了HashMap关键的数据结构以及相关扩容、插入、删除等操作，有一些比较理解较为简单的地方略过了没有讲，大概就是这个样子了。

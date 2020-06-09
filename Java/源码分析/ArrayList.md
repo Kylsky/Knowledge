@@ -243,9 +243,7 @@ private void fastRemove(int index) {
 
 
 
-### *ensureCapacity(int 
-
-### minCapacity)
+### *ensureCapacity(int minCapacity)
 
 ````java
 public void ensureCapacity(int minCapacity) {
@@ -367,6 +365,10 @@ public static native void arraycopy(Object src,  int  srcPos,
                                     Object dest, int destPos,
                                     int length);
 ```
+
+1 2 3  7 4 5 6
+
+1 2 3  4 5 6
 
 参考链接：
 
