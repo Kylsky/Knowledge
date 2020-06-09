@@ -43,6 +43,14 @@ input {
   }
 }
 
+filter {
+    ruby {
+        code => "
+        event.set('timestamp', event.get('@timestamp').time.localtime + 8*60*60)
+       event.set('@timestamp',event.get('timestamp'))"
+    }
+}
+
 output {
   if[type] == "operator_log"{
     elasticsearch {
