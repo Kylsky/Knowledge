@@ -355,9 +355,9 @@ Spring Data Elasticsearch使用两个接口来定义可以针对Elasticsearch索
 
 ### ElasticsearchOperations
 
-**1.ElasticsearchTemplate**
+#### **#1.ElasticsearchTemplate**
 
-ElasticsearchOperations 的实现类，使用的是Transport Client，前情提要，es8会提出Transport Client，所以这个template生死未卜，不过还是来看看怎么实现的把：
+ElasticsearchOperations 的实现类，使用的是Transport Client，前情提要，es8会剔除Transport Client，所以这个template生死未卜，不过还是来看看怎么实现的把：
 
 ```java
 @Configuration
@@ -390,7 +390,7 @@ public class TransportClientConfig extends ElasticsearchConfigurationSupport {
 
 
 
-**2.ElasticsearchRestTemplate**
+#### **2.ElasticsearchRestTemplate**
 
 ElasticsearchOperations的实现类，使用的是High Level Client。
 
@@ -454,4 +454,43 @@ template.save(new Person("Bruce Banner", 42))                    	 //save后打�
 ```
 
 
+
+## 六、Elasticsearch Repositories
+
+这张包含了Elasticsearch存储库实现的细节。
+
+### Query检索策略
+
+Elasticsearch模块支持所有基本的查询构建特性，如字符串查询、本地搜索查询、基于条件的查询，或者根据方法的查询。
+
+从方法名派生查询并不总是足够的，并且/或者可能导致不可读的方法名。在这种情况下，可以使用@Query注释，如
+
+```java
+@Query("{\"match\": {\"name\": {\"query\": \"?0\"}}}")
+```
+
+### 创建Query
+
+通常，Elasticsearch的查询按照查询方法中的参数来执行。下面是一个关于Elasticsearch查询方法的简短例子:
+
+```java
+interface BookRepository extends Repository<Book, String> {
+  List<Book> findByNameAndPrice(String name, Integer price);
+}
+```
+
+相对的请求为：
+
+```json
+{
+    "query": {
+        "bool" : {
+            "must" : [
+                { "query_string" : { "query" : "?", "fields" : [ "name" ] } },
+                { "query_string" : { "query" : "?", "fields" : [ "price" ] } }
+            ]
+        }
+    }
+}
+```
 
