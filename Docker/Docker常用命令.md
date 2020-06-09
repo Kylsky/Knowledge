@@ -27,3 +27,15 @@
 ### docker rm -f [容器id]
 
 强制删除容器
+
+### docker logs [容器id]
+
+查看指定容器的日志
+
+### docker log -f [容器name]
+
+查看指定容器的日志
+
+### docker exec -it [容器id] /bin/bash
+
+启动shell进程打开容器，按ctrl+P+Q退出
