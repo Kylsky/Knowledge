@@ -1,4 +1,4 @@
-# SpringAMQP
+# 	SpringAMQP
 
 翻译自Spring官网
 
@@ -64,7 +64,6 @@ AmqpTemplate template = context.getBean(AmqpTemplate.class);
 template.convertAndSend("myqueue", "foo");
 String foo = (String) template.receiveAndConvert("myqueue");
 
-........
 
 @Configuration
 public class RabbitConfiguration {
@@ -514,9 +513,13 @@ public interface BatchingStrategy {
 
 ### 3.6 接收信息
 
-springAMQP有多种接收消息的方法，逐个来看看
+接收消息总是比发送消息稍微复杂一点。有两种接收消息的方法。更简单的选择是使用轮询方法调用一次轮询一条消息。更复杂但更常见的方法是注册一个按需异步接收消息的侦听器。
 
-#### receive
+#### 轮询消费
+
+AmqpTemplate本身可以用于轮询消息接收。默认情况下，如果没有可用的消息，则立即返回null。没有阻塞。从1.5版本开始，您就可以设置一个receiveTimeout(以毫秒为单位)，并且receive方法将阻塞这么长时间来等待消息。小于0的值意味着无限制地阻塞(或者至少直到与代理的连接丢失为止)。版本1.6引入了接收方法的变体，允许在每次调用时传递超时。
+
+有四种简单的接收方法可用。与发送端上的交换一样，有一个方法要求在模板本身上直接设置默认队列属性，有一个方法在运行时接受队列参数。版本1.6引入了接受timeoutMillis的变体，在每个请求的基础上覆盖了receiveTimeout。下面的列表显示了这四种方法的定义:
 
 ```java
 Message receive() throws AmqpException;
@@ -528,11 +531,7 @@ Message receive(long timeoutMillis) throws AmqpException;
 Message receive(String queueName, long timeoutMillis) throws AmqpException;
 ```
 
-这四个比较简单
-
-
-
-#### receiveAndConvert
+在发送消息的情况下，AmqpTemplate有一些方便的方法用于接收pojo而不是消息实例，并且实现提供了一种自定义MessageConverter的方法，用于创建返回的对象:下面的清单显示了这些方法:
 
 ```java
 Object receiveAndConvert() throws AmqpException;
@@ -544,11 +543,11 @@ Object receiveAndConvert(long timeoutMillis) throws AmqpException;
 Object receiveAndConvert(String queueName, long timeoutMillis) throws AmqpException;
 ```
 
-receiveAndConvert方法的返回类型为Object，因此更具有普遍性。在2.0版本以后，这些方法的一些变体使用附加的ParameterizedTypeReference参数来转换复杂类型，这要求template必须配置一个SmartMessageConverter
+从2.0版本开始，这些方法的变体采用额外的ParameterizedTypeReference参数来转换复杂类型。模板必须配置一个SmartMessageConverter。
 
 
 
-#### receiveAndReply
+与从1.3版本开始的sendAndReceive方法类似，AmqpTemplate有几个方便的receiveAndReply方法，用于同步接收、处理和回复消息。下面的清单显示了这些方法定义:
 
 ```java
 <R, S> boolean receiveAndReply(ReceiveAndReplyCallback<R, S> callback)
@@ -570,4 +569,69 @@ receiveAndConvert方法的返回类型为Object，因此更具有普遍性。在
 			ReplyToAddressCallback<S> replyToAddressCallback) throws AmqpException;
 ```
 
-1.3版本后，amqpTemplate拥有了以下更方便的方法来异步实现消息接收、处理、确认
+AmqpTemplate实现负责接收和应答阶段。在大多数情况下，您应该只提供ReceiveAndReplyCallback的实现，以便为接收到的消息执行一些业务逻辑，并在需要时构建应答对象或消息。注意，ReceiveAndReplyCallback可能返回null。在这种情况下，没有发送任何应答，并且receiveAndReply的工作方式与receive方法类似。这使得相同的队列可以用于消息的混合，其中一些消息可能不需要回复。
+
+
+
+#### 异步消费
+
+Spring AMQP还通过使用@RabbitListener注释支持带注释的侦听器端点，并提供了一个开放的基础设施来编程注册端点。这是到目前为止设置异步使用者最方便的方法。
+
+异步接收消息的最简单方法是使用带注释的侦听器端点基础结构。简而言之，它允许您将托管bean的方法公开为Rabbit侦听器端点。下面的例子展示了如何使用@RabbitListener注释:
+
+```java
+@Component
+public class MyService {
+
+  @RabbitListener(bindings = @QueueBinding(
+        value = @Queue(value = "myQueue", durable = "true"),
+        exchange = @Exchange(value = "auto.exch", ignoreDeclarationExceptions = "true"),
+        key = "orderRoutingKey")
+  )
+  public void processOrder(Order order) {
+    ...
+  }
+
+  @RabbitListener(bindings = @QueueBinding(
+        value = @Queue,
+        exchange = @Exchange(value = "auto.exch"),
+        key = "invoiceRoutingKey")
+  )
+  public void processInvoice(Invoice invoice) {
+    ...
+  }
+
+  @RabbitListener(queuesToDeclare = @Queue(name = "${my.queue}", durable = "true"))
+  public String handleWithSimpleDeclare(String data) {
+      ...
+  }
+
+}
+```
+
+
+
+当接收到一批消息时，通常由容器执行批处理，并且每次用一条消息调用侦听器。从2.2版本开始，可以配置侦听器容器工厂和侦听器，以在一次调用中接收整个批处理，只需设置工厂的batchListener属性，并将方法有效负载参数列表:
+
+```java
+@Bean
+public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory() {
+    SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+    factory.setConnectionFactory(connectionFactory());
+    factory.setBatchListener(true);
+    return factory;
+}
+
+@RabbitListener(queues = "batch.1")
+public void listen1(List<Thing> in) {
+    ...
+}
+
+// or
+
+@RabbitListener(queues = "batch.2")
+public void listen2(List<Message<Thing>> in) {
+    ...
+}
+```
+
