@@ -1,145 +1,118 @@
-# ElasticSearch(二)——启动es
+# ElasticSearch(五)——Mapping
 
-## 一、启动elasticsearch
+## 一、Mapping
 
-**linux下下载安装包**
+Mapping是定义如何存储和索引文档及其包含的字段的过程。例如，使用映射来定义：
+
+1.哪些字符串字段应该作为全文字段处理
+
+2.哪些字段包含数字、日期或地理位置
+
+3.日期格式化处理
+
+4.控制动态添加字段的映射的自定义规则
+
+一个mapping定义包含两部分：**Meta-fields**和**Fields or Properties**。
+
+Meta-fields用于定制如何处理与文档相关的元数据，包括文档的_index、_id和_source字段。
+
+Fields or Properties包含与文档相关的字段或属性列表。
+
+
+
+## 二、Field数据类型
+
+每个字段有一个数据类型，可以是：
+
+1.简单类型：text、keyword、date、long、double、boolean或ip
+
+2.一种支持JSON分层特性的类型，比如object或nested
+
+3.geo_point、geo_shape或completion等专门化类型
+
+
+
+以不同的目的使用不同的方式索引同一个字段通常很有用。例如，字符串字段可以作为text字段进行索引，以便进行全文搜索，也可以作为keyword字段进行索引，以便进行排序或聚合。或者，可以使用标准分析器、英语分析器和法语分析器为字符串字段建立索引。
+
+
+
+### 防止映射爆炸
+
+在索引中定义太多字段会导致映射爆炸，从而导致内存不足错误和难以恢复的情况。这个问题可能比预期的更常见。例如，考虑这样一种情况:插入的每个新文档都会引入新字段。这在动态映射中非常常见。每次文档包含新字段时，这些字段都会出现在索引的映射中。对于少量数据来说，这并不令人担忧，但随着映射的增长，这可能会成为一个问题。以下设置允许限制field的数量
+
+**index.mapping.total_fields.limit**
+
+fields的最大数量，默认为1000
+
+**index.mapping.depth.limit**
+
+字段的最大深度，用内部对象的数量来衡量。例如，如果所有字段都在根对象级别定义，则深度为1。如果存在一个对象映射，那么深度就是2，以此类推。默认值是20。
+
+**index.mapping.nested_fields.limit**
+
+索引中不同嵌套映射的最大数目，默认为50。
+
+**index.mapping.nested_objects.limit**
+
+跨所有嵌套类型的单个文档内嵌套JSON对象的最大数量，默认为10000
+
+**index.mapping.field_name_length.limit**
+
+设置字段名的最大长度。默认值是Long。MAX_VALUE(没有限制)。这个设置实际上并不能解决映射爆炸问题，但是如果您想限制字段长度，它仍然很有用。通常不需要设置此设置。除非用户开始添加大量名称很长的字段，否则默认设置是可以的。
+
+
+
+## 三、动态映射
+
+字段和映射类型在使用之前不需要定义。由于有了动态映射，新的字段名称将自动添加，只需索引一个文档。可以向顶级映射类型、内部对象和嵌套字段添加新字段。
+
+
+
+## 四、显式映射
+
+你对数据的了解要比Elasticsearch所能猜测的要多，因此尽管动态映射在开始时可能很有用，但在某些时候你可能希望指定自己的显式映射。
+
+你可以在创建索引或者向索引新增字段时创建fields
+
+#### **创建索引**
 
 ```
-curl -L -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.6.2-linux-x86_64.tar.gz
-```
-
-**解压**
-
-```
-tar -xvf elasticsearch-7.6.2-linux-x86_64.tar.gz
-```
-
-**启动**
-
-```
-cd elasticsearch-7.6.2/bin
-./elasticsearch
-```
-
-**启动多台实例**
-
-```
-./elasticsearch -Epath.data=data2 -Epath.logs=log2
-./elasticsearch -Epath.data=data3 -Epath.logs=log3
-```
-
-额外的节点被分配唯一的id。因为在本地运行了三个节点，所以它们会自动与第一个节点加入集群。
-
-**查看实例启动情况**
-
-使用cat health API来验证您的三节点集群是否正在运行。cat api以一种比原始JSON更易于阅读的格式返回关于集群和索引的信息。
-
-通过向Elasticsearch REST API提交HTTP请求，可以直接与集群交互。如果已经安装并运行了Kibana，您还可以打开Kibana并通过开发控制台提交请求。
-
-```
-curl -s http://localhost:9200/_cat/health?v
-```
-
-**注意**
-
-不能以root用户启动elasticsearch，那么就创建一个
-
-```
-adduser elasticsearch
-passwd elasticsearch
-#第一个指用户名，第二个为可执行文件
-chown -R elasticsearch:elasticsearch /opt/elasticsearch-7.6.2/
-su elasticsearch
-./elasticsearch -d
-```
-
-
-
-## 二、为文档建立索引
-
-一旦集群启动并运行，就可以为一些数据建立索引了。Elasticsearch有各种各样的摄取选项，但最终它们都做相同的事情:将JSON文档放入到Elasticsearch索引中。
-
-### 发送request
-
-想服务器发送PUT请求，uri表示向名为**customer**的index传输类型为_doc的文档，该文档的id为1，doc的内容为"name":"John Doe"
-
-```
-curl -X PUT "localhost:9200/customer/_doc/1?pretty" -H 'Content-Type: application/json' -d'
+PUT /my-index
 {
-  "name": "John Doe"
+  "mappings": {
+    "properties": {
+      "age":    { "type": "integer" },  
+      "email":  { "type": "keyword"  }, 
+      "name":   { "type": "text"  }     
+    }
+  }
 }
-'
 ```
 
-### 接收response
+#### **新增字段**
 
 ```
+PUT /my-index/_mapping
 {
-  "_index" : "customer",
-  "_type" : "_doc",
-  "_id" : "1",
-  "_version" : 1,
-  "result" : "created",
-  "_shards" : {
-    "total" : 2,
-    "successful" : 1,
-    "failed" : 0
-  },
-  "_seq_no" : 0,
-  "_primary_term" : 1
-}
-```
-
-由于这是一个新文档，因此响应表明操作的结果是创建了文档的版本1
-
-### 获取doc
-
-```
-#这是请求
-curl -X GET "localhost:9200/customer/_doc/1?pretty"
-#这是响应
-{
-  "_index" : "customer",
-  "_type" : "_doc",
-  "_id" : "1",
-  "_version" : 1,
-  "_seq_no" : 26,
-  "_primary_term" : 4,
-  "found" : true,
-  "_source" : {
-    "name": "John Doe"
+  "properties": {
+    "employee-id": {
+      "type": "keyword",
+      "index": false
+    }
   }
 }
 ```
 
 
 
-## 三、批量索引文档
+#### 注意事项
 
-如果您有很多文档需要索引，可以使用bulk API分批提交它们。使用bulk来批量处理文档操作比单独提交请求要快得多，因为它最小化了网络往返的传输。
+除了受支持的映射参数外，你不能更改现有字段的映射或字段类型。更改现有字段可能会使已经索引的数据无效。如果需要更改字段的映射，请创建具有正确映射的新索引，并将数据重新索引到该索引中。重命名字段会使已在旧字段名称下建立索引的数据无效。相反，添加别名字段来创建替代字段名称。
 
-最佳批数量取决于许多因素:文档大小和复杂性、索引和搜索负载以及集群可用的资源。一个好的起点是批量处理1,000到5,000个文档，总有效负载在5MB到15MB之间。在这个范围内，可以尝试找到最佳位置。
 
+
+## 五、获取映射
+
+```console
+GET /my-index/_mapping
 ```
-#下载多个doc
-wget https://github.com/elastic/elasticsearch/blob/master/docs/src/test/resources/accounts.json
-#批量索引doc
-curl -H "Content-Type: application/json" -XPOST "localhost:9200/bank/_bulk?pretty&refresh" --data-binary "@accounts.json"
-#查看index
-curl "localhost:9200/_cat/indices?v"
-```
-
-
-
-## 四、配置外网访问es
-
-在es安装路径下配置elasticsearch.yml，需要修改内容如下：
-
-```
-network.host: ***.**.**.**
-
-port: 9200
-
-cluster.initial_master_nodes: ["node1"]
-```
-
