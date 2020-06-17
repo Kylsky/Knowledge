@@ -13,7 +13,7 @@ cat id_rsa.pub
 
 ## 二、设置带权限的access_token
 
-在github上地Settings->Developers settings->Personal access tokens->Create new token
+在github上的Settings->Developers settings->Personal access tokens->Create new token
 
 选择repo和admin:repo_hook后生成，这个access只能看到一次，所以要保存好
 
@@ -27,7 +27,7 @@ a44f22cf13********4d874f8472c
 
 找到Github Server选项，添加一个凭据，添加之后记得勾选管理hook
 
-![img](http://www.kylescloud.top/site/pic/Jenkins2.png)
+![img](http://kylescloud.top/site/pic/Jenkins2.png)
 
 将生成的access_token复制到Secret一栏，注意红框里的内容，描述可以自己写
 
