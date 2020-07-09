@@ -32,7 +32,7 @@
 
 查看指定容器的日志
 
-### docker log -f [容器name]
+### docker logs -f [容器name]
 
 查看指定容器的日志
 
