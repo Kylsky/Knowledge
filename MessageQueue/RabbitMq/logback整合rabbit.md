@@ -2,7 +2,7 @@
 
 ## 一、前言
 
-最近团队在做日志采集的通用解决方案，我这边需要解决的是一个比较小的需求：
+最近在做日志采集的通用解决方案，需要解决一个比较小的需求：
 
 在每次代码使用logger.error("msg")的时候将该日志信息发送到rabbit，并通过logstash传输到es做存储，传输的字段主要为以下几个：
 
@@ -118,7 +118,7 @@ applicationName：服务名(需要额外配置)
     </appender>
 
     <!-- The file record only records the log of the specified package -->
-    //这里制定了controller，若想整个项目都发送日志，则指定对应包名即可
+    //这里制定了controller，若想整个项目都发送日志，则指定对应包名即可，如com.example
     <logger name="com.example.es.controller" level="warn" additivity="false">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="AMQP"/>
@@ -143,23 +143,107 @@ logging:
 ### 3.编写类继承ClassConverter，返回当前服务器ip
 
 ```java
+package cn.pubinfo.logback.config;
+
 import ch.qos.logback.classic.pattern.ClassicConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Optional;
 
 public class IPLogConfig extends ClassicConverter {
+    private static final Logger logger = LoggerFactory.getLogger(IPLogConfig.class);
+    private volatile static Inet4Address inetAddr = null;
+
     @Override
     public String convert(ILoggingEvent iLoggingEvent) {
         try {
-            return InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
+            if (inetAddr==null){
+                inetAddr = getLocalIp4Address().get();
+            }
+            return inetAddr.getHostAddress();
+        } catch (SocketException e) {
             e.printStackTrace();
         }
         return null;
     }
+
+    public static List<Inet4Address> getLocalIp4AddressFromNetworkInterface() throws SocketException {
+        List<Inet4Address> addresses = new ArrayList<>(1);
+        Enumeration e = NetworkInterface.getNetworkInterfaces();
+        if (e == null) {
+            return addresses;
+        }
+        while (e.hasMoreElements()) {
+            NetworkInterface n = (NetworkInterface) e.nextElement();
+            if (!isValidInterface(n)) {
+                continue;
+            }
+            Enumeration ee = n.getInetAddresses();
+            while (ee.hasMoreElements()) {
+                InetAddress i = (InetAddress) ee.nextElement();
+                if (isValidAddress(i)) {
+                    addresses.add((Inet4Address) i);
+                }
+            }
+        }
+        return addresses;
+    }
+
+    /**
+     * 过滤回环网卡、点对点网卡、非活动网卡、虚拟网卡并要求网卡名字是eth或ens开头
+     *
+     * @param ni 网卡
+     * @return 如果满足要求则true，否则false
+     */
+    private static boolean isValidInterface(NetworkInterface ni) throws SocketException {
+        return !ni.isLoopback() && !ni.isPointToPoint() && ni.isUp() && !ni.isVirtual()
+                && (ni.getName().startsWith("eth") || ni.getName().startsWith("ens") ||ni.getName().startsWith("wlan"));
+    }
+
+    /**
+     * 判断是否是IPv4，并且内网地址并过滤回环地址.
+     */
+    private static boolean isValidAddress(InetAddress address) {
+        return address instanceof Inet4Address && address.isSiteLocalAddress() && !address.isLoopbackAddress();
+    }
+
+
+    private static Optional<Inet4Address> getIpBySocket() throws SocketException {
+        try (final DatagramSocket socket = new DatagramSocket()) {
+            socket.connect(InetAddress.getByName("www.baidu.com"), 10002);
+            if (socket.getLocalAddress() instanceof Inet4Address) {
+                return Optional.of((Inet4Address) socket.getLocalAddress());
+            }
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+        return Optional.empty();
+    }
+
+    public static Optional<Inet4Address> getLocalIp4Address() throws SocketException {
+        final List<Inet4Address> ipByNi = getLocalIp4AddressFromNetworkInterface();
+        if (ipByNi.isEmpty() || ipByNi.size() > 1) {
+            final Optional<Inet4Address> ipBySocketOpt = getIpBySocket();
+            if (ipBySocketOpt.isPresent()) {
+                return ipBySocketOpt;
+            } else {
+                return ipByNi.isEmpty() ? Optional.empty() : Optional.of(ipByNi.get(0));
+            }
+        }
+        return Optional.of(ipByNi.get(0));
+    }
+
+    public static void main(String[] args) throws UnknownHostException, SocketException {
+        System.out.println(getIpBySocket().get().getHostAddress());
+    }
 }
+
 ```
 
 
@@ -198,9 +282,26 @@ output{
 
 ## 四、大功告成
 
-这样就差不多结束了，如果想要做es的自定义mapping，则需要额外操作es，不过对于一些简单的需求来说，es的自动生成映射也足够应付了。
+这样就差不多结束了，如果想要做es的自定义mapping，则需要额外操作es，不过对于一些简单的需求来说，es的自动生成映射也足够应付了。以下给出我的es mapping：
 
-
+```
+PUT /logback
+{
+  "mappings": {
+    "properties": {
+      "time":{
+        "format": "yyyy-MM-dd HH:mm:ss",
+        "type":"date"
+      },
+      "applicationName":{"type":"text"},
+      "class-line":{"type":"text"},
+      "ip":{"type":"text"},
+      "level":{"type":"keyword"},
+      "message":{"type":"text"}
+    }
+  }
+}
+```
 
 
 

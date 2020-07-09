@@ -116,7 +116,7 @@ public class RecvLog {
             channel.exchangeDeclare(EXCHANGE_NAME,"topic");
             //声明队列
             String queueName = channel.queueDeclare().getQueue();
-            //绑定队列-exchange-routing_key
+            //绑定queue-exchange-routing_key
             channel.queueBind(queueName,EXCHANGE_NAME,"A.info");
             channel.queueBind(queueName,EXCHANGE_NAME,"B.error");
             //声明回调
