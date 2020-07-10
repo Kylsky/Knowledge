@@ -23,15 +23,15 @@ a44f22cf13********4d874f8472c
 
 进入系统设置创建对应凭据
 
-![img](http://kylescloud.top/site/pic/Jenkins1.png)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/Jenkins1.png)
 
 找到Github Server选项，添加一个凭据，添加之后记得勾选管理hook
 
-![img](http://kylescloud.top/site/pic/Jenkins2.png)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/Jenkins2.png)
 
 将生成的access_token复制到Secret一栏，注意红框里的内容，描述可以自己写
 
-![image-20200415152425737](http://kylescloud.top/site/pic/Jenkins3.png)
+![image-20200415152425737](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/Jenkins3.png)
 
 
 
@@ -39,7 +39,7 @@ a44f22cf13********4d874f8472c
 
 去这里安装git、github、maven插件，安装完成可能需要重启一下jenkins,安装插件会要好一会儿，先去睡一觉吧~
 
-![image-20200415152425737](http://kylescloud.top/site/pic/Jenkins4.png)
+![image-20200415152425737](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/Jenkins4.png)
 
 
 

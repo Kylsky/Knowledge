@@ -2,7 +2,7 @@
 
 ## 一、Class加载-初始化
 
-![img](http://www.kylescloud.top/site/pic/classloading.jpg)
+![classloading](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/classloading.jpg)
 
 ### loading
 
@@ -34,7 +34,7 @@
 
 ## 二、类加载器
 
-![img](http://www.kylescloud.top/site/pic/classloader.jpg)
+![classloader](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/classloader.jpg)
 
 当一个class文件被load到内存中时，内存为class开辟两个区域，一个区域用来存储class文件中的二进制数，另一个区域用于存放创建的java语义下的class对象，该对象指向内存中的class二进制文件。上图**需要注意的是**，BootStrap加载器时c++实现的模块，所以在java代码中无法找到，而下面的ExtClassLoader和AppClassLoader虽然使用java代码实现，但是这两者或这三者不存在继承关系，且ExtClassLoader和AppClassLoader属于Lanucher类的内部类，它们的类加载器由c++实现，不存在层级关系。
 
@@ -96,7 +96,7 @@ protected Class<?> loadClass(String name, boolean resolve)
 
 当一个class被需要时，jvm向当前class对应的类加载器检查class是否位于类加载器的缓存中，若类加载器显示不存在，则jvm向当前类加载器的父类加载器检查，若存在则返回，否则依此类推直到检查到BootStrap ClassLoader，当处理到顶层类加载器BootStrap ClassLoader，BootStrap会根据自己加载的类库判断是否存在class信息，若有则加载class文件并返回，若无则向低一层类加载器查询，以此类推，直到检查到class并加载返回或最终没有检擦到class抛出ClassNotFound异常。流程图如下：
 
-![img](http://kylescloud.top/site/pic/classloading2.jpg)
+![classloading2](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/classloading2.jpg)
 
 ### 为什么需要双亲委派机制？
 

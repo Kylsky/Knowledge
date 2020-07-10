@@ -38,6 +38,6 @@
 
 我觉得官网的展示即很好的展现了Jenkins的优点，直接上图
 
-![img](http://kylescloud.top/site/pic/JenkinsGood.jpg)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/JenkinsGood.jpg)
 
 简单介绍了以下Jenkins，我认为学习一门技术最好的方式就是在实践中使用他，因此下一篇就从Jenkins的安装开始讲起吧~

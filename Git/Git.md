@@ -198,15 +198,15 @@ merge会产生历史的分叉，而rebase可以使其成为一条直线
 
 合并分支。主要分以下几种情况
 
-![fast-forward](http://kylescloud.top/site/pic/fast-forward1.jpg)
+![fast-forward](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/fast-forward1.jpg)
 
 👆由于当前 master 分支所指向的提交是你当前提交（dev的提交）的直接上游，所以 Git 只是简单的将 master 指针向前移动。 Git 在合并两者的时候，只会简单的将指针向前推进（指针右移），因为这种情况下的合并操作没有需要解决的分歧——这就叫做 快进（fast-forward）
 
-![fast-forward](http://kylescloud.top/site/pic/no-fast.jpg)
+![fast-forward](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/no-fast.jpg)
 
 👆在 master 分支和 dev 分支的公共祖先 B2 后，master 和 dev 的提交是对不同文件或者同一文件的不同部分进行了修改，Git 也可以直接合并它们
 
-![fast-forward](http://kylescloud.top/site/pic/conflict.jpg)
+![fast-forward](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/conflict.jpg)
 
 👆master和dev修改了相同文件并导致了冲突。任何因包含合并冲突而有待解决的文件，都会以未合并状态标识出来。 Git 会在有冲突的文件中加入标准的冲突解决标记，这样你可以打开这些包含冲突的文件然后手动解决冲突。 
 

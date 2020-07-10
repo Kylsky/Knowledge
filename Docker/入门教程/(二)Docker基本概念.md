@@ -2,7 +2,7 @@
 
 Docker是提供应用打包，部署与应用的容器化平台
 
-![image-20200509111314998](C:\Users\Kyle\AppData\Roaming\Typora\typora-user-images\image-20200509111314998.png)
+![image-20200509111314998](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20200509111314998.png)
 
 docker引擎包含三个部分：
 

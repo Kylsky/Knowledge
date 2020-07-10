@@ -4,7 +4,7 @@
 
 回顾一下JVM对Class的加载和初始化流程
 
-![img](http://www.kylescloud.top/site/pic/classloading.jpg)
+![img](http://kylescloud.top/site/pic/classloading.jpg)
 
 ### loading
 

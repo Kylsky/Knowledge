@@ -12,7 +12,7 @@
 
 HashMap以键值对的形式存储数据，且键可以为null。这里会关键讨论到hash表在Java中的实现以及解决冲突的方法。
 
-![img](https://upload-images.jianshu.io/upload_images/5679451-c6e80d30b6653324.png?imageMogr2/auto-orient/strip|imageView2/2/w/552/format/webp)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/5679451-c6e80d30b6653324.png)
 
 
 

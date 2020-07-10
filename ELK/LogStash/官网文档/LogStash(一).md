@@ -8,7 +8,7 @@ Logstash是一个具有实时流水线功能的开源数据收集引擎。Logsta
 2. 可插入的管道架构
 3. 社区可扩展和开发人员友好的插件生态系统
 
-![img](https://www.elastic.co/guide/en/logstash/current/static/images/logstash.png)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/logstash.png)
 
 
 
