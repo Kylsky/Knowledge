@@ -42,11 +42,11 @@
 
 ### 日志主体部分
 
-![img](http://kylescloud.top/site/pic/GCLog.png)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/GCLog.png)
 
 ### Heap Dump部分
 
-![img](http://kylescloud.top/site/pic/HeapDump.jpg)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/HeapDump.jpg)
 
 划红线的3条16进制数分别表示**内存起始地址、使用空间结束地址，整体空间结束地址**
 

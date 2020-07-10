@@ -16,7 +16,7 @@ AMQP（Advanced Message Queuing Protocol，高级消息队列协议）是一个�
 
 来看看AMQP的模型：
 
-![img](http://kylescloud.top/site/pic/AMQPmodel.jpg)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/AMQPmodel.jpg)
 
 以下是对模型中的概念的简单阐述
 
@@ -101,7 +101,7 @@ AMQP（Advanced Message Queuing Protocol，高级消息队列协议）是一个�
 
 再来看下RabbitMq在这个协议下的工作模型:
 
-![img](http://kylescloud.top/site/pic/RabbitMqModel.jpg)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/RabbitMqModel.jpg)
 
 1.消息生产者连接到RabbitMQ Broker，创建connection，开启channel。
 2.生产者声明交换机类型、名称、是否持久化等。

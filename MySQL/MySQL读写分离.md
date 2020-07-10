@@ -1,10 +1,6 @@
 # MySQL读写分离
 
-![1570776205802](E:\lian\oracle\mysql\mysql-proxy.jpg)
-
 ### 1、读写分离的介绍
-
-![](E:\lian\oracle\mysql\读写分离.jpg)
 
 ​        MySQL读写分离基本原理是让master数据库处理写操作，slave数据库处理读操作。master将写操作的变更同步到各个slave节点。
 

@@ -142,4 +142,4 @@ rabbitmqctl set_permissions -p "/" mq ".*" ".*" ".*"
 
 以下是管理界面的显示：
 
-![img](http://kylescloud.top/site/pic/RabbitMqManagement.jpg)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/RabbitMqManagement.jpg)

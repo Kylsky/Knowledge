@@ -4,7 +4,7 @@
 
 回顾一下JVM对Class的加载和初始化流程
 
-![img](http://kylescloud.top/site/pic/classloading.jpg)
+![classloading](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/classloading.jpg)
 
 ### loading
 
@@ -106,7 +106,7 @@ public class Test {
 
 CPU为了提高指令执行效率，会在一条指令执行过程中，去同时执行另一条指令，前提是两条指令没有依赖关系。举例如下：
 
-![img](http://kylescloud.top/site/pic/cpumisorder.jpg)
+![cpumisorder](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/cpumisorder.jpg)
 
 
 

@@ -140,7 +140,7 @@ protected void customizeBeanFactory(DefaultListableBeanFactory beanFactory) {
 
 AbstractRefreshableApplicationContext下的loadBeanDefinitions是一个抽象方法，这也很好理解，一个Spring应用可以有很多定义Bean的方法，如xml、注解方式，甚至还可以有远程获取Bean的方法，因此也有很多获取Bean定义的方法，简单看一下重写了**loadBeanDefinitions**方法的类有哪些
 
-![img](http://kylescloud.top/site/pic/loadDefinition.png)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/loadDefinition.png)
 
 这些类都重写了loadBeanDefinitions方法，不难通过类名判断各个类的意思，本节会先通过AbstractXmlApplicaitonContext来将如何加载bean定义，虽然现在普遍流行的是springboot通过注解形式来加载bean，但是AbstractXmlApplicaitonContext的loadBeanDefinitions方法下有很多值得关注的内容，且相信很多人在新手入门时接触的可能更多的是XML，因此也更容易理解。下面贴源码~在阅读源码之前，不难想到，如果需要从XML文件中读取配置，那么就需要通过I/O来获取文件数据流，带着这个概念看下面的代码就不难理解
 

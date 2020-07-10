@@ -4,7 +4,7 @@
 
 消息生产者同时向许多消费者发送消息
 
-![img](http://kylescloud.top/site/pic/RabbitMqPubSub.png)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/RabbitMqPubSub.png)
 
 在前面的教程中，创建了一个工作队列。工作队列背后的假设是，每个任务只交付给一个工作者。在这一部分中，我们将做一些完全不同的事情——我们将向多个消费者传递消息。这种模式称为“发布/订阅”。
 

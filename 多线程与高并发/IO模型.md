@@ -28,7 +28,7 @@ I/O模型主要分为BIO、NIO、多路复用IO以及AIO，在介绍这四种I/O
 
 BIO(Blocking I/O)，即同步阻塞I/O。图示为BIO的I/O模型：
 
-![img](http://kylescloud.top/site/pic/BIO.png)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/BIO.png)
 
 来看看使用BIO模型时的整体执行流程：
 
@@ -48,7 +48,7 @@ BIO(Blocking I/O)，即同步阻塞I/O。图示为BIO的I/O模型：
 
 NIO(Non-blocking I/O)，同步非阻塞I/O，要说NIO相比BIO的优越之处就在于“非阻塞”，即线程在等待结果时不再将其他线程阻塞，先看看NIO模型：
 
-![img](http://kylescloud.top/site/pic/NIO.png)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/NIO.png)
 
 当一个进程或一个线程多次调用socket.read方法时，不再阻塞，而是通过轮询调用系统内核，直到操作系统返回结果。这直接减少了线程之间多余的阻塞等待时间。
 
@@ -60,13 +60,13 @@ NIO(Non-blocking I/O)，同步非阻塞I/O，要说NIO相比BIO的优越之处�
 
 多路复用I/O(IO Multiplex),看一下多路复用I/O的简单模型：
 
-![img](http://kylescloud.top/site/pic/IOMultiplex.jpg)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/IOMultiplex.jpg)
 
 倘若目前有1000个连接连到操作系统内核，线程并不像NIO那样“无脑”地向操作系统轮询所有的fd(file dwscriptor,文件描述符)，而是先询问一下哪些fd已经有数据可以进行处理了，随后再将需要处理的进行轮询。这在**一定程度上降低了用户态内核态的切换，不过还是治标不治本**。有什么解决方法呢？
 
 来看看Linux系统下通过epoll实现的多路复用是如何解决问题的：
 
-![img](http://kylescloud.top/site/pic/LinuxEpoll.jpg)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/LinuxEpoll.jpg)
 
 epoll中使用mmap(内存映射)创建了用户态和内核态的共享空间，当线程(用户态)通过epoll-create创建需要监听的fd的句柄并传递给内核，内核通过epoll-ctl注册这些句柄到共享空间的红黑树中，并调用epoll-wait等待数据产生，并传输到共享空间的链表中，并通知线程处理任务，这样能有效地提高运行效率。
 

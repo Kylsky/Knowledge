@@ -8,7 +8,7 @@
 
 为了实现这一目标，是时候看看下面这个模型了：
 
-![img](https://www.rabbitmq.com/img/tutorials/python-five.png)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/python-five.png)
 
 你可能会发现这个模型长得其实和routing模型差不多，不过还是有一些差别的
 

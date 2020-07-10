@@ -84,4 +84,4 @@ T t = new T()，对象定位即将t引用定位到T的class下
 
 这里只做简单的图示，之后会有具体的介绍
 
-![img](http://kylescloud.top/site/pic/gc.jpg)
+![gc](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/gc.jpg)

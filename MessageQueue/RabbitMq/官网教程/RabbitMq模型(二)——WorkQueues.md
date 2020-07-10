@@ -4,7 +4,7 @@
 
 消费者以竞争模式消费rabbitmq中的任务。在第一个教程中，我们编写了从指定队列发送和接收消息的程序。在本例中，将创建一个工作队列，用于在多个工作者之间分配耗时的任务。
 
-![img](http://kylescloud.top/site/pic/RabbitMqWorkQueues.png)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/RabbitMqWorkQueues.png)
 
 工作队列(即任务队列)背后的主要思想是避免立即执行资源密集型任务，并且必须等待它完成的场景出现。因此，我们希望把任务安排在以后完成。我们将任务封装为消息并将其发送到队列。在后台运行的工作进程将弹出任务并最终执行作业。当运行许多worker时，任务将在它们之间共享。
 

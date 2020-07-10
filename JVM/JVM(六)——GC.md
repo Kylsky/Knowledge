@@ -60,7 +60,7 @@
 
 ### 分区
 
-![img](http://kylescloud.top/site/pic/heapPartition.jpg)
+![heapPartition](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/heapPartition.jpg)
 
 堆内存一般被分为**新生代**和**老年代**。
 
@@ -70,7 +70,7 @@
 
 ### GC概念
 
-![img](http://kylescloud.top/site/pic/GCConcept.jpg)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/GCConcept.jpg)
 
 MinorGC/YGC:年轻代空间耗尽时触发
 
@@ -114,7 +114,7 @@ MajorGC/FullGC：在老年代无法继续分配空间时触发，新生代老年
 
 ## 五、常见的垃圾回收器
 
-![img](http://kylescloud.top/site/pic/GarbageCollectors.jpg)
+![GarbageCollectors](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/GarbageCollectors.jpg)
 
 ### Serial
 
@@ -178,7 +178,7 @@ MajorGC/FullGC：在老年代无法继续分配空间时触发，新生代老年
 
 ### 从线程角度分析工作阶段
 
-![img](http://kylescloud.top/site/pic/CMS1.jpg)
+![CMS1](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/CMS1.jpg)
 
 #### 初始标记
 

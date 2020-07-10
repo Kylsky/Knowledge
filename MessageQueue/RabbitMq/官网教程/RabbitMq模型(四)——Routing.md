@@ -6,11 +6,11 @@
 
 **WorkQueues：**
 
-![img](http://kylescloud.top/site/pic/RabbitMqWorkQueues.png)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/RabbitMqWorkQueues.png)
 
 **Pub/Sub:**
 
-![img](http://kylescloud.top/site/pic/RabbitMqPubSub.png)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/RabbitMqPubSub.png)
 
 在第二个模型中，生产者生产消息并发向指定队列，消费者再从指定队列中消费消息。到了第三个模型，生产者和消费者不再与队列直接关联，而是与exchange进行通信，间接向队列生产消息或从队列消费消息，这相对于第二个模型来说减少了与队列之间的耦合。
 
@@ -18,7 +18,7 @@
 
 **Routing：**
 
-![img](http://kylescloud.top/site/pic/RabbitMqRouting.png)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/RabbitMqRouting.png)
 
 
 
@@ -42,7 +42,7 @@ channel.queueBind(queueName, EXCHANGE_NAME, "black");
 
 当然，光是这样做还不够，Pub/Sub模型中我们提到过，exchange中的fanout类型用于广播消息，在Routing模型中肯定是不适用的，因此，我们将用Direct exchange代替。Direct exchange背后的路由算法很简单——消息传递到其routing_key完全匹配的队列。就像这张图所描述的一样：
 
-![img](http://kylescloud.top/site/pic/RabbitMqRouting.png)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/RabbitMqRouting.png)
 
 在这个设置中，我们可以看到Direct exchange X，它绑定了两个队列。第一个队列用routing_key **orange**绑定，第二个队列有两个routing_key，一个绑定**black**，另一个绑定**green**。
 
@@ -56,7 +56,7 @@ channel.exchangeDeclare(EXCHANGE_NAME, "direct");
 
 ## 四、多重绑定
 
-![img](http://kylescloud.top/site/pic/RabbitMqMultipleBinding.png)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/RabbitMqMultipleBinding.png)
 
 使用相同的routing_key绑定多个队列是完全合法的。在我们的示例中，可以使用binding键black在X和Q1之间添加一个绑定。在这种情况下，Direct将像fanout一样工作，并将消息广播到所有匹配的队列。带有路由键black的消息将被发送到Q1和Q2。
 

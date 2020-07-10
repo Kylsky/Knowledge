@@ -14,7 +14,7 @@ http://next.rabbitmq.com/tutorials/tutorial-one-java.html
 
 可以看到最简单的消息队列模型为一个生产者-一条消息队列-一个消费者
 
-![img](http://kylescloud.top/site/pic/rabbitMq-HelloWorld.png)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/rabbitMq-HelloWorld.png)
 
 
 

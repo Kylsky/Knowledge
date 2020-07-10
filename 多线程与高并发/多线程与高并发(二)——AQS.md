@@ -43,7 +43,7 @@ AbstractQueuedSynchronizer类，所有锁的核心。在研究源码之前，先
 
 上图——
 
-![img](http://www.kylescloud.top/site/pic/aqs.jpg)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/aqs.jpg)
 
 每一个Node节点即代表一个线程，head和tail表示头节点和尾节点，state在不同的锁实现中有不同的值，用来表示线程持有锁的状态值。简单了解了AQS的数据结构，那么来看一下代码把，从ReentantLock开始分析。
 

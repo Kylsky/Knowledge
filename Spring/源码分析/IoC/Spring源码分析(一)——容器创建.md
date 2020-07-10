@@ -10,7 +10,7 @@ Spring的核心理念在于IOC和AOP，IOC，即Inversion Of Control，控制反
 
 Bean是怎么被注册到工厂中的？工厂又是怎么样的？保留这些问题并从源头开始观察：
 
-![img](https://www.javadoop.com/blogimages/spring-context/1.png)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/1.png)
 
 ![img](https://www.javadoop.com/blogimages/spring-context/2.png)
 

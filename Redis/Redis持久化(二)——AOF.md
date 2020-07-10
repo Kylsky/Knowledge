@@ -96,7 +96,7 @@ AOF自动重写首先需要满足以下条件：
 
 4.子进程完成AOF文件重写，向父进程发送完成信号。父进程则将AOF重写缓存写入到新的AOF文件中，并对新的AOF文件改名，覆盖原有的AOF文件。
 
-![img](http://kylescloud.top/site/pic/BGREWRITEOF.png)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/BGREWRITEOF.png)
 
 
 
