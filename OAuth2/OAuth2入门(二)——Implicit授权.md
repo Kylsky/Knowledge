@@ -21,6 +21,13 @@
 
 ![image-20200710102459231](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20200710102459231.png)
 
+**ResourceOwner**：资源所有者，即为用户
+**User-Agent**：浏览器
+**AuthorizationServer**：认证服务器，可以理解为用户资源托管方，比如企业微信服务端
+**Client**：第三方服务
+
+
+
 1.上图中，用户在访问第三方应用(User-Agent)时需要通过oauth系统进行登录，因此，当前应用(假设之前从未登录)发现本地token不存在，于是根据oauth分发的**client_id**和**redirect_uri**，通过指定接口尝试获取token,接口如下:
 
 ```
