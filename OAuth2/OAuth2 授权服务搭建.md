@@ -211,6 +211,15 @@ public final class AuthorizationServerEndpointsConfigurer {
 
 再次重申：使用默认配置那是不存在的，来看看我们能做什么：
 
+```java
+public final class AuthorizationServerSecurityConfigurer extends
+		SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
+        
+}
+```
+
+
+
 
 
 
