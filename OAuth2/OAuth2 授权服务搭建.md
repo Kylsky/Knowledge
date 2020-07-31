@@ -1,8 +1,8 @@
-# OAuth2 授权服务
+# OAuth2 授权服务概述
 
 ## 一、前言
 
-在我看来，OAuth2的整体的学习难度还是稍微有点大的，另外在学习OAuth2之前，需要知道一些spring security的前置知识，虽然不是必须的，但是能起到比较好的助推学习的作用。由于整个OAuth2的授权服务比较复杂，因此在此写篇文章做个记录。
+OAuth2的整体的学习难度还是稍微有点大的，另外在学习OAuth2之前，需要知道一些spring security的前置知识，虽然不是必须的，但是能起到比较好的助推学习的作用。由于整个OAuth2的授权服务比较复杂，因此在此写篇文章做个记录。
 
 
 
@@ -16,7 +16,7 @@ OAuth2授权服务的关键在于**@EnableAuthorizationServer**注解以及一�
 2. AuthorizationServerEndpointsConfigurer；
 3. AuthorizationServerSecurityConfigurer。
 
-因此，全文将会围绕以上几点进行展开，虽然东西很多，但是按照流程理清思路，就不至于无从下手。
+因此，全文将会围绕以上几点进行展开，虽然东西很多，但是按照流程理清思路，也不会很困难。
 
 
 
@@ -24,7 +24,7 @@ OAuth2授权服务的关键在于**@EnableAuthorizationServer**注解以及一�
 
 用来在当前应用context里(必须是一个DispatcherServlet context)开启一个授权server(例如AuthorizationEndpoint)和一个TokenEndpoint。server的多个属性可以通过自定义AuthorizationServerConfigurer类型(如AuthorizationServerConfigurerAdapter的扩展)的Bean来定制。通过正常使用spring security的特色EnableWebSecurity，用户负责保证授权Endpoint(/oauth/authorize)的安全，但Token Endpoint(/oauth/token)将自动使用http basic的客户端凭证来保证安全。通过一个或者多个AuthorizationServerConfigurers提供一个ClientDetailService来注册client(必须)
 
-```
+```java
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
@@ -89,7 +89,7 @@ public class ClientDetailsServiceConfigurer extends
 
 尝试使用比较熟悉的jdbc作为示例：
 
-```
+```java
 @Resource
 private DataSource dataSource;
 
@@ -125,7 +125,7 @@ public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 配置授权服务器端点的非安全性特性，如token存储，token定制，用户凭证和授权类型等。默认情况下你不需要做任何配置。除非你需要配置密码授权类型，那你就得额外配上AuthenticationManager
 ```
 
-当然了，使用默认配置那是不存在的，我们的目标就是搞事情~因此打开**AuthorizationServerEndpointsConfigurer**类的源码介绍一些常用的配置方法
+当然了，使用默认配置那是不存在的，我们的目标就是搞事情~~因此打开**AuthorizationServerEndpointsConfigurer**类的源码介绍一些常用的配置方法
 
 ```java
 public final class AuthorizationServerEndpointsConfigurer {
@@ -183,6 +183,31 @@ public final class AuthorizationServerEndpointsConfigurer {
 }
 ```
 
+举个简单的例子：
+
+```
+@Override
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
+        endpoints
+        		//将"/oauth/check_token"映射到"/oauth/hello"
+                .pathMapping("/oauth/check_token","/oauth/hello")
+                .authenticationManager(authenticationManager)
+                //填写自定义的userService
+                .userDetailsService(……)
+                //设置请求类型
+                .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST)
+                //填写自定义的授权码服务
+                .authorizationCodeServices(……)
+                //设置自定义的tokenStore
+                .tokenStore(……)
+                //设置自定义的tokenConverter
+                .accessTokenConverter(……)
+                //设置自定义的重定向处理器
+                .redirectResolver(……)
+        ;
+    }
+```
+
 
 
 ## 六、AuthorizationServerSecurityConfigurer
@@ -209,18 +234,60 @@ public final class AuthorizationServerEndpointsConfigurer {
 配置授权服务器的安全性，即实际意义上的/oauth/token端点。当然，/oauth/authorize端点也需要是安全的，但是那是一个普通的面向用户的端点，应该像UI的其他部分一样安全，所以就是不需要在这里配置的意思了。默认设置涵盖了最常见的需求，遵循OAuth2规范的建议，因此在这里您不需要做任何事情就可以启动并运行基本服务器。
 ```
 
-再次重申：使用默认配置那是不存在的，来看看我们能做什么：
+再次重申：使用默认配置是不存在的，来看看我们能做什么：
 
 ```java
 public final class AuthorizationServerSecurityConfigurer extends
 		SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
-        
+    //让/oauth/token支持客户端模式进行登录认证，可以看看https://www.jianshu.com/p/57cfdfbf57dc
+    public AuthorizationServerSecurityConfigurer allowFormAuthenticationForClients() {
+		this.allowFormAuthenticationForClients = true;
+		return this;
+	}
+    
+    //设置/oauth/token请求的权限，如permitAll(),默认是deny All()
+    public AuthorizationServerSecurityConfigurer tokenKeyAccess(String tokenKeyAccess) {
+		this.tokenKeyAccess = tokenKeyAccess;
+		return this;
+	}
+
+    //设置/oauth/check_token请求的权限，如permitAll()，默认是deny All()
+	public AuthorizationServerSecurityConfigurer checkTokenAccess(String checkTokenAccess) {
+		this.checkTokenAccess = checkTokenAccess;
+		return this;
+	}
+    
+    //设置只接受https请求
+    public AuthorizationServerSecurityConfigurer sslOnly() {
+		this.sslOnly = true;
+		return this;
+	}
+    
+    //若token或check_token请求失败，则由该处理器处理
+    public AuthorizationServerSecurityConfigurer accessDeniedHandler(AccessDeniedHandler accessDeniedHandler) {
+		this.accessDeniedHandler = accessDeniedHandler;
+		return this;
+	}
+}
+```
+
+举个简单的例子：
+
+```java
+@Override
+    public void configure(AuthorizationServerSecurityConfigurer oauthServer) {
+        oauthServer
+                .tokenKeyAccess("permitAll()")
+                .checkTokenAccess("permitAll()")
+                .allowFormAuthenticationForClients();
 }
 ```
 
 
 
+## 七、其他
 
+总体而言，OAuth授权服务的搭建基本围绕以上的配置进行展开，详细的搭建流程以及另外涉及SpringSecurity、Cors的内容将会在后续文章更新。
 
 
 

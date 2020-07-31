@@ -6,7 +6,7 @@
 
 ## 一、介绍
 
-provider主要用于暴露OAuth2的受保护资源。他的配置使client能**获取这些资源**或让client能**代表一个用户**。provider通过管理和校验token来使client获取资源。同时，provider必须提供一个接口来使用户能够对资源进行授权访问。
+provider主要用于暴露OAuth2的受保护资源。他的配置使client能**获取这些资源**或让client能**代表一个用户(认证)**。provider通过管理和校验token来使client获取资源。同时，provider必须提供一个接口来使用户能够对资源进行授权访问。
 
 
 
@@ -97,7 +97,7 @@ public void configure(AuthorizationServerSecurityConfigurer oauthServer) {
     }
 ```
 
-有一个重要的地方在于，在provider将授权代码提供给OAuth client的方式下，授权码由OAuth客户端通过将终端用户引导到一个**授权页面**来获得，终端用户可以在该页面中输入自己的凭据，并从提供授权码的provider处重定向回OAuth客户端。授权服务的主要配置有以下几个方面：
+有一个重要的地方在于，在provider将授权代码提供给OAuth client的方式下，授权码由OAuth客户端通过将终端用户引导到一个**授权页面**来获得，终端用户可以在该页面中输入自己的凭据，并从提供授权码的provider处重定向回OAuth客户端。
 
 
 
