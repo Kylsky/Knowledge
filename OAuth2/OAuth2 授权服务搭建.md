@@ -1,93 +1,222 @@
-# OAuth2 授权服务概述
+# OAuth2 授权服务搭建(一)
 
-## 一、前言
+## 1.前言
 
-OAuth2的整体的学习难度还是稍微有点大的，另外在学习OAuth2之前，需要知道一些spring security的前置知识，虽然不是必须的，但是能起到比较好的助推学习的作用。由于整个OAuth2的授权服务比较复杂，因此在此写篇文章做个记录。
-
-
-
-## 二、思路
-
-OAuth2授权服务的关键在于**@EnableAuthorizationServer**注解以及一个实现**AuthorizationServerConfigurer**接口的类并重写相关configure配置方法(或继承这个类的适配器**ResourceServerConfigurerAdapter**)。
-
-重写3个configure方法，核心内容在于配置以下信息：
-
-1. ClientDetailsService；
-2. AuthorizationServerEndpointsConfigurer；
-3. AuthorizationServerSecurityConfigurer。
-
-因此，全文将会围绕以上几点进行展开，虽然东西很多，但是按照流程理清思路，也不会很困难。
+前面在OAuth授权服务概述中大致介绍了OAuth授权服务的一些核心内容，接下来进行授权服务的搭建。搭建之前，先预设用户信息及client信息存储在mysql中，token、授权码、session等服务使用redis进行控制
 
 
 
-## 三、@EnableAuthorizationServer
+## 2.引入项目依赖
 
-用来在当前应用context里(必须是一个DispatcherServlet context)开启一个授权server(例如AuthorizationEndpoint)和一个TokenEndpoint。server的多个属性可以通过自定义AuthorizationServerConfigurer类型(如AuthorizationServerConfigurerAdapter的扩展)的Bean来定制。通过正常使用spring security的特色EnableWebSecurity，用户负责保证授权Endpoint(/oauth/authorize)的安全，但Token Endpoint(/oauth/token)将自动使用http basic的客户端凭证来保证安全。通过一个或者多个AuthorizationServerConfigurers提供一个ClientDetailService来注册client(必须)
+```xml
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.1.13.RELEASE</version>
+</parent>
+
+<properties>
+    <java.version>1.8</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <spring-boot.version>2.3.0.RELEASE</spring-boot.version>
+</properties>
+
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-jdbc</artifactId>
+        <version>2.1.13.RELEASE</version>
+    </dependency>
+
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>8.0.19</version>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.session</groupId>
+        <artifactId>spring-session-data-redis</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.security.oauth</groupId>
+        <artifactId>spring-security-oauth2</artifactId>
+        <version>2.3.3.RELEASE</version>
+    </dependency>
+
+    <dependency>
+        <groupId>com.baomidou</groupId>
+        <artifactId>mybatis-plus-boot-starter</artifactId>
+        <version>2.3</version>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+        <exclusions>
+            <exclusion>
+                <groupId>org.junit.vintage</groupId>
+                <artifactId>junit-vintage-engine</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+</dependencies>
+```
+
+
+
+## 3.编写配置文件
+
+```yml
+spring:
+  application:
+    name: oauth
+  datasource:
+    url: jdbc:mysql://localhost:3306/user?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT&useSSL=false
+    username: root
+    password: 123456
+  redis:
+    host: 127.0.0.1
+      port: 6379
+      password: 123456
+      database: 10
+  session:
+    store-type: redis
+    redis:
+      flush-mode: on_save
+      namespace: auth
+
+server:
+  port: 8765
+  servlet:
+    context-path: oauth
+    session:
+      cookie:
+        path: /
+        name: _oauth2_token_
+        max-age: 86400
+
+```
+
+
+
+## 4.创建数据库&代码生成
+
+### 4.1 user表
+
+```sql
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for user
+-- ----------------------------
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `password` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `gmt_update` datetime(0) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
+  `gmt_create` datetime(0) DEFAULT CURRENT_TIMESTAMP,
+  `status` tinyint(4) DEFAULT 1 ,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+SET FOREIGN_KEY_CHECKS = 1;
+```
+
+
+
+### 4.2 client表
+
+```sql
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for oauth_client_details
+-- ----------------------------
+DROP TABLE IF EXISTS `client`;
+CREATE TABLE `client`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `client_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `client_secret` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `scope` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT 'demo',
+  `grant_types` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `autoapprove` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '',
+  `access_token_validity` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '9000',
+  `refresh_token_validity` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT '90000',
+  `authorities` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `status` tinyint(4) DEFAULT NULL,
+  `create_time` datetime(0) DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime(0) DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+SET FOREIGN_KEY_CHECKS = 1;
+```
+
+
+
+### 4.3 代码生成
+
+这里使用mybatis代码生成器生成实体类、Service(Impl)、Controller、Dao、Mapper等文件。详见github：https://github.com/kylsky/oauth2
+
+
+
+## 5.配置启动类
 
 ```java
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-@Import({AuthorizationServerEndpointsConfiguration.class, AuthorizationServerSecurityConfiguration.class})
-public @interface EnableAuthorizationServer {
-
+@SpringBootApplication
+@EnableRedisHttpSession
+@EnableAuthorizationServer
+public class AuthenticationApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(AuthenticationApplication.class, args);
+    }
 }
 ```
 
-通过代码和翻译成中文的注释不难理解，要想实现授权服务器，OAuth2规定了必须的操作，也就是在第二节中提到的三点，来一一看一下。
 
 
+## 6.Configurer配置
 
-## 四、ClientDetailsService
-
-OAuth2通过继承**ResourceServerConfigurerAdapter**并重写以下方法来配置ClientDetailsService：
+Configurer的配置是OAuth2授权服务的重头戏，这里新建一个config包并创建OAuth2Configurer类，实现AuthorizationServerConfigurer接口，重写相关接口方法：
 
 ```java
-@Override
-public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-    //TODO
+@Configuration
+public class OAuth2Configuration implements AuthorizationServerConfigurer {
+    @Override
+    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+		//TODO
+    }
+    
+    @Override
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+		//TODO
+    }
+    
+    @Override
+    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+		//TODO
+    }
 }
 ```
 
-来看看作为参数，ClientDetailsServiceConfigurer是怎么配置ClientDetailsService的：
 
-```java
-public class ClientDetailsServiceConfigurer extends
-		SecurityConfigurerAdapter<ClientDetailsService, ClientDetailsServiceBuilder<?>> {
-	//构造器，传入builder
-	public ClientDetailsServiceConfigurer(ClientDetailsServiceBuilder<?> builder) {
-		setBuilder(builder);
-	}
-	//根据传入的ClientDetailsService配置
-	public ClientDetailsServiceBuilder<?> withClientDetails(ClientDetailsService clientDetailsService) throws Exception {
-		setBuilder(getBuilder().clients(clientDetailsService));
-		return this.and();
-	}
 
-    //配置ClientDetailsService为内存模式
-	public InMemoryClientDetailsServiceBuilder inMemory() throws Exception {
-		InMemoryClientDetailsServiceBuilder next = getBuilder().inMemory();
-		setBuilder(next);
-		return next;
-	}
-    //配置ClientDetailsService为jdbc模式
-	public JdbcClientDetailsServiceBuilder jdbc(DataSource dataSource) throws Exception {
-		JdbcClientDetailsServiceBuilder next = getBuilder().jdbc().dataSource(dataSource);
-		setBuilder(next);
-		return next;
-	}
-    //此处略过一些无关方法
-    ……
-}
-```
+### 6.1 ClientDetailsServiceConfigurer
 
-可以发现，OAuth2提供了3种定义ClientDetailsService的方法：
-
-1. 内存模式，在内存中存储client
-2. jdbc模式，将client信息存储在数据库
-3. 自定义的ClientDetailsService，如可以将client存储在redis或者mongo
-
-尝试使用比较熟悉的jdbc作为示例：
+概述中讲到，OAuth2通过继承AuthorizationServerConfigurer并重写**configure(ClientDetailsServiceConfigurer clients)**方法来配置ClientDetailsService，由于使用mysql对client数据进行存储，因此配置如下：
 
 ```java
 @Resource
@@ -100,194 +229,195 @@ public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 }
 ```
 
-没错，就是这么简单了。
 
 
-
-## 五、AuthorizationServerEndpoints
-
-看到这么长的一串英文，你就应该想到事情并不简单,来看看OAuth2是怎么说的吧
-
-```java
-/**
-	 * Configure the non-security features of the Authorization Server endpoints, like token store, token
-	 * customizations, user approvals and grant types. You shouldn't need to do anything by default, unless you need
-	 * password grants, in which case you need to provide an {@link AuthenticationManager}.
-	 * 
-	 * @param endpoints the endpoints configurer
-	 */
-	void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception;
-```
-
-其实把注释翻译过来也不难理解：
+### 6.2 AuthorizationServerEndpointsConfigurer
 
 ```
 配置授权服务器端点的非安全性特性，如token存储，token定制，用户凭证和授权类型等。默认情况下你不需要做任何配置。除非你需要配置密码授权类型，那你就得额外配上AuthenticationManager
 ```
 
-当然了，使用默认配置那是不存在的，我们的目标就是搞事情~~因此打开**AuthorizationServerEndpointsConfigurer**类的源码介绍一些常用的配置方法
+根据官方文档对**configure(AuthorizationServerEndpointsConfigurer endpoints)**方法的描述，来对其进行配置
 
 ```java
-public final class AuthorizationServerEndpointsConfigurer {
-    //设置TokenStore，用于存储token
-	public AuthorizationServerEndpointsConfigurer tokenStore(TokenStore tokenStore) {
-		this.tokenStore = tokenStore;
-		return this;
-	}
-    
-    //设置重定向处理器
-    public AuthorizationServerEndpointsConfigurer redirectResolver(RedirectResolver redirectResolver) {
-		this.redirectResolver = redirectResolver;
-		return this;
-	}
-    
-    //用于映射oauth自带的接口，映射后的地址会替换原来的地址，如pathMapping("/oauth/check_token", "/oauth/haha")
-    public AuthorizationServerEndpointsConfigurer pathMapping(String defaultPath, String customPath) {
-		this.patternMap.put(defaultPath, customPath);
-		return this;
-	}
-    
-    //设置允许的请求类型
-    public AuthorizationServerEndpointsConfigurer allowedTokenEndpointRequestMethods(HttpMethod... requestMethods) {
-		Collections.addAll(allowedTokenEndpointRequestMethods, requestMethods);
-		return this;
-	}
-    
-    //如果需要启动password授权模式，那么authenticationManager就必须得配置了
-    public AuthorizationServerEndpointsConfigurer authenticationManager(AuthenticationManager authenticationManager) {
-		this.authenticationManager = authenticationManager;
-		return this;
-	}
-    
-    //设置UserDetailsService
-    public AuthorizationServerEndpointsConfigurer userDetailsService(UserDetailsService userDetailsService) {
-		if (userDetailsService != null) {
-			this.userDetailsService = userDetailsService;
-			this.userDetailsServiceOverride = true;
-		}
-		return this;
-	}
-    
-    //设置授权码模式下的code服务
-    public AuthorizationServerEndpointsConfigurer authorizationCodeServices(
-			AuthorizationCodeServices authorizationCodeServices) {
-		this.authorizationCodeServices = authorizationCodeServices;
-		return this;
-	}
-    
-    //设置accessTokenConverter，accessTokenConverter用于返回token时进行额外的操作，如额外返回一些自定义的字段
-    public AuthorizationServerEndpointsConfigurer accessTokenConverter(AccessTokenConverter accessTokenConverter) {
-		this.accessTokenConverter = accessTokenConverter;
-		return this;
-	}
+@Resource
+private UserService userService;
+
+@Resource
+private AuthenticationManager authenticationManager;
+
+@Resource
+private AuthorizationCodeService authorizationCodeService;
+
+@Resource
+private TokenStore tokenStore;
+
+@Resource
+private RedirectResolver redirectResolver;
+
+@Override
+public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
+    endpoints
+        .pathMapping("/oauth/check_token","/oauth/hello")
+        .authenticationManager(authenticationManager)
+        .userDetailsService(userService)
+        .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST)
+        .authorizationCodeServices(authorizationCodeService)
+        .tokenStore(tokenStore)
+        .accessTokenConverter(new TokenConverter())
+        .redirectResolver(redirectResolver)
 }
 ```
 
-举个简单的例子：
+#### 6.2.1 pathMapping()
 
+上述示例中，pathMapping("/oauth/check_token","/oauth/hello")用来表示将oauth2自带的/oauth/check_token映射到/oauth/hello，此时，oauth校验token时需要使用/oauth/hello作为路径，原有的路径会无法使用或被重写的接口代替。
+
+
+
+#### 6.2.2 userDetailsService()
+
+用于配置用户相关的服务，由于使用mysql作为user的数据存储，因此在mvc的service层中令UserService继承UserDetailsService，并在UserServiceImpl中继承loadUserByUsername方法即可
+
+```java
+//String类型参数用于传输用户名
+public interface UserDetailsService {
+    UserDetails loadUserByUsername(String var1) throws UsernameNotFoundException;
+}
 ```
-@Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
-        endpoints
-        		//将"/oauth/check_token"映射到"/oauth/hello"
-                .pathMapping("/oauth/check_token","/oauth/hello")
-                .authenticationManager(authenticationManager)
-                //填写自定义的userService
-                .userDetailsService(……)
-                //设置请求类型
-                .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST)
-                //填写自定义的授权码服务
-                .authorizationCodeServices(……)
-                //设置自定义的tokenStore
-                .tokenStore(……)
-                //设置自定义的tokenConverter
-                .accessTokenConverter(……)
-                //设置自定义的重定向处理器
-                .redirectResolver(……)
-        ;
+
+来简单实现一下UserServiceImpl：
+
+```java
+@Service
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+    @Resource
+    private UserMapper userMapper;
+
+    @Override
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        List<User> users = userMapper.selectList(new EntityWrapper<User>()
+                .eq("username",s));
+        if (CollectionUtils.isEmpty(users)){
+            throw new UsernameNotFoundException("用户名不存在");
+        }else if (users.size()>1){
+            throw new UsernameNotFoundException("用户名重复，联系管理员");
+        }
+        User user = users.get(0);
+        return new org.springframework.security.core.userdetails.User(user.getUsername(),
+                user.getPassword(),
+                true,
+                true,
+                true,
+                true,
+                null);
     }
-```
-
-
-
-## 六、AuthorizationServerSecurityConfigurer
-
-一看这名字就知道和安全脱不了关系了，来看看源码上的注释：
-
-```java
-/**
-	 * Configure the security of the Authorization Server, which means in practical terms the /oauth/token endpoint. The
-	 * /oauth/authorize endpoint also needs to be secure, but that is a normal user-facing endpoint and should be
-	 * secured the same way as the rest of your UI, so is not covered here. The default settings cover the most common
-	 * requirements, following recommendations from the OAuth2 spec, so you don't need to do anything here to get a
-	 * basic server up and running.
-	 * 
-	 * @param security a fluent configurer for security features
-	 */
-	void configure(AuthorizationServerSecurityConfigurer security) throws Exception;
-
-```
-
-翻译一下：
-
-```
-配置授权服务器的安全性，即实际意义上的/oauth/token端点。当然，/oauth/authorize端点也需要是安全的，但是那是一个普通的面向用户的端点，应该像UI的其他部分一样安全，所以就是不需要在这里配置的意思了。默认设置涵盖了最常见的需求，遵循OAuth2规范的建议，因此在这里您不需要做任何事情就可以启动并运行基本服务器。
-```
-
-再次重申：使用默认配置是不存在的，来看看我们能做什么：
-
-```java
-public final class AuthorizationServerSecurityConfigurer extends
-		SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
-    //让/oauth/token支持客户端模式进行登录认证，可以看看https://www.jianshu.com/p/57cfdfbf57dc
-    public AuthorizationServerSecurityConfigurer allowFormAuthenticationForClients() {
-		this.allowFormAuthenticationForClients = true;
-		return this;
-	}
-    
-    //设置/oauth/token请求的权限，如permitAll(),默认是deny All()
-    public AuthorizationServerSecurityConfigurer tokenKeyAccess(String tokenKeyAccess) {
-		this.tokenKeyAccess = tokenKeyAccess;
-		return this;
-	}
-
-    //设置/oauth/check_token请求的权限，如permitAll()，默认是deny All()
-	public AuthorizationServerSecurityConfigurer checkTokenAccess(String checkTokenAccess) {
-		this.checkTokenAccess = checkTokenAccess;
-		return this;
-	}
-    
-    //设置只接受https请求
-    public AuthorizationServerSecurityConfigurer sslOnly() {
-		this.sslOnly = true;
-		return this;
-	}
-    
-    //若token或check_token请求失败，则由该处理器处理
-    public AuthorizationServerSecurityConfigurer accessDeniedHandler(AccessDeniedHandler accessDeniedHandler) {
-		this.accessDeniedHandler = accessDeniedHandler;
-		return this;
-	}
 }
 ```
 
-举个简单的例子：
+上述代码简单判断了用户名是否存在以及是否存在同名问题，若存在则抛出异常，其他异常类型可以在**AuthenticationException**的继承类中查看。在return的参数中，参数分别为：**用户名**、**密码**、**用户是否可用**、**用户是否有效**、**凭证是否有效**、**账户是否锁定**、**用户权限**，这里就简单配置一下以作参考。
+
+
+
+#### 6.2.3 authorizationCodeServices()
+
+使用Redis存储授权码
+
+```java
+@Configuration
+public class AuthorizationCodeService extends RandomValueAuthorizationCodeServices {
+    @Resource
+    private StringRedisTemplate<String, OAuth2Authentication> stringRedisTemplate;
+
+    @Override
+    protected void store(String code, OAuth2Authentication authentication) {
+        stringRedisTemplate.opsForValue().set(code, authentication, 1, TimeUnit.MINUTES);
+    }
+
+    @Override
+    protected OAuth2Authentication remove(String code) {
+        OAuth2Authentication auth2Authentication;
+        try {
+            auth2Authentication = stringRedisTemplate.opsForValue().get(code);
+        } catch (Exception e) {
+            return null;
+        }
+        if (auth2Authentication != null) {
+            stringRedisTemplate.delete(code);
+        }
+        return auth2Authentication;
+    }
+}
+```
+
+
+
+#### 6.2.4 tokenStore()
+
+tokenStore用于存储token，这里使用redis存储token，使用打印日志的方式模拟业务逻辑，如果需要存储更多信息，如用户的电话、邮箱等信息，则需要创建类并继承OAuth2Authentication，通过构造函数传入OAuth2AccessToken、OAuth2Authentication对象，并实现额外的需求。
+
+```java
+public class MyTokenStore extends RedisTokenStore {
+    private static final Logger logger = LoggerFactory.getLogger(MyTokenStore.class);
+    
+    @Resource
+    private UserService userService;
+
+    public MyTokenStore(RedisConnectionFactory connectionFactory) {
+        super(connectionFactory);
+    }
+
+    @Override
+    public void storeAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
+        logger.info(authentication.getName());
+        super.storeAccessToken(token, authentication);
+    }
+}
+```
+
+
+
+#### 6.2.5 accessTokenConverter(）
+
+TokenStore用于存储token、authentication，而TokenConverter相反的则从token和authentication中获取信息，并通过map传输。同样的，如果需要传输额外的用户信息，则需要创建类实现OAuth2Authentication，并在convertAccessToken中通过相关get方法获取信息并传入map。以下示例仅作为参考：
+
+```java
+public class TokenConverter extends DefaultAccessTokenConverter {
+    @Override
+    @SuppressWarnings("unchecked")
+    public Map<String, ?> convertAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
+        Map<String, Object> map = (Map<String, Object>) super.convertAccessToken(token, authentication);
+        map.put("curDate",new Date());
+        return map;
+    }
+}
+```
+
+
+
+#### 6.2.6 redirectResolver()
+
+默认使用RedirectResolver
+
+
+
+### 6.3 AuthorizationServerSecurityConfigurer
+
+这里不做说明了，之前在概述里有讲过
 
 ```java
 @Override
-    public void configure(AuthorizationServerSecurityConfigurer oauthServer) {
-        oauthServer
-                .tokenKeyAccess("permitAll()")
-                .checkTokenAccess("permitAll()")
-                .allowFormAuthenticationForClients();
+public void configure(AuthorizationServerSecurityConfigurer oauthServer) {
+    oauthServer
+        .tokenKeyAccess("permitAll()")
+        .checkTokenAccess("permitAll()")
+        .allowFormAuthenticationForClients()
+        ;
 }
 ```
 
 
 
-## 七、其他
+## 7.SpringSecurity相关配置
 
-总体而言，OAuth授权服务的搭建基本围绕以上的配置进行展开，详细的搭建流程以及另外涉及SpringSecurity、Cors的内容将会在后续文章更新。
-
-
-
+这里也要配置挺多东西的，请看下回分解。
