@@ -2,12 +2,7 @@
 
 ## 1.介绍
 
-Maven是一个项目管理工具，它包含了一个**项**
-**目对象模型** (Project Object Model)，一组**标准集合**，一个**项目生命周期**(Project
-Lifecycle)，一个**依赖管理系统**(Dependency Management System)，和用来运行定义在
-生命周期阶段(phase)中**插件**(plugin)目标(goal)的逻辑。 当你使用Maven的时候，你
-用一个明确定义的项目对象模型来描述你的项目，然后 Maven 可以应用横切的逻辑，
-这些逻辑来自一组共享的（或者自定义的）插件。
+Maven是一个项目管理工具，它包含了一个**项目对象模型** (Project Object Model)，一组**标准集合**，一个**项目生命周期**(Project Lifecycle)，一个**依赖管理系统**(Dependency Management System)，和用来运行定义在生命周期阶段(phase)中**插件**(plugin)目标(goal)的逻辑。 当你使用Maven的时候，你用一个明确定义的项目对象模型来描述你的项目，然后 Maven 可以应用横切的逻辑，这些逻辑来自一组共享的（或者自定义的）插件。
 
 ### 1.1约定优于配置
 
@@ -43,7 +38,7 @@ M2_HOME=maven所在文件夹的路径
 
 ## 3.核心概念
 
-### 3.1Maven插件和目标
+### *3.1Maven插件和目标
 
 ```
 mvn archetype:create -DgroupId=org.sonatype.mavenbook.ch03 \
@@ -59,7 +54,7 @@ mvn archetype:create -DgroupId=org.sonatype.mavenbook.ch03 \
 
 
 
-### 3.2Maven生命周期
+### *3.2Maven生命周期
 
 生命周期是包含在一个项目构建中的一系列有序的阶段。Maven可以支持许多不同的生命周期，但是最常用的生命周期是默认的Maven生命周期，这个生命周期中一开始的一个阶段是验证项目的基本完整性，最后的一个阶段是把一个项目发布成产品。
 
@@ -93,7 +88,7 @@ jar:jar
 
 
 
-### 3.3Maven坐标
+### *3.3Maven坐标
 
 Maven坐标定义了一组标识，它们可以用来唯一标识一个项目，一个依赖，或者Maven
 POM里的一个插件。看一下下面的POM:
@@ -133,23 +128,12 @@ Maven从远程仓库下载构件和插件到你本机上，存储在你的本地
 
 ### 3.5Maven依赖管理
 
-一个复杂的项目将会包含很多依赖，也有可能包含依赖于其它构件的依赖。这是Maven
-最强大的特征之一，它支持了传递性依赖（transitive dependencies）。假如你
-的项目依赖于一个库，而这个库又依赖于五个或者十个其它的库（就像Spring或者
-Hibernate那样）。你不必找出所有这些依赖然后把它们写在你的pom.xml里，你只需
-要加上你直接依赖的那些库，Maven会隐式的把这些库间接依赖的库也加入到你的项目
-中。Maven也会处理这些依赖中的冲突，同时能让你自定义默认行为，或者排除一些特
-定的传递性依赖。
+一个复杂的项目将会包含很多依赖，也有可能包含依赖于其它构件的依赖。这是Maven最强大的特征之一，它支持了传递性依赖（transitive dependencies）。假如你的项目依赖于一个库，而这个库又依赖于五个或者十个其它的库（就像Spring或者Hibernate那样）。你不必找出所有这些依赖然后把它们写在你的pom.xml里，你只需
+要加上你直接依赖的那些库，Maven会隐式的把这些库间接依赖的库也加入到你的项目中。Maven也会处理这些依赖中的冲突，同时能让你自定义默认行为，或者排除一些特定的传递性依赖。
 
-当你把项目的构件安装到本地仓库时，你会发现在和JAR文件同一目录下，Maven发布了
-一个稍微修改过的pom.xml的版本。存储POM文件在仓库里提供给其它项目了该项目的信
-息，其中最重要的就是它有哪些依赖。如果项目B依赖于项目A，那么它也依赖于项目A
-的依赖。当Maven通过一组Maven坐标来处理依赖构件的时候，它也会获取POM，通依赖
-的POM来**寻找传递性依赖**。那些传递性依赖就会被添加到当前项目的依赖列表中。
+当你把项目的构件安装到本地仓库时，你会发现在和JAR文件同一目录下，Maven发布了一个稍微修改过的pom.xml的版本。存储POM文件在仓库里提供给其它项目了该项目的信息，其中最重要的就是它有哪些依赖。如果项目B依赖于项目A，那么它也依赖于项目A的依赖。当Maven通过一组Maven坐标来处理依赖构件的时候，它也会获取POM，通依赖的POM来**寻找传递性依赖**。那些传递性依赖就会被添加到当前项目的依赖列表中。
 
-在Maven中一个依赖不仅仅是一个JAR。它是一个POM文件，这个POM可能也声明了对其它
-构件的依赖。这些依赖的依赖叫做传递性依赖，Maven仓库不仅仅存贮二进制文件，也
-存储了这些构建的元数据（metadata，即pom.xml），才使传递性依赖成为可能。
+在Maven中一个依赖不仅仅是一个JAR。它是一个POM文件，这个POM可能也声明了对其它构件的依赖。这些依赖的依赖叫做传递性依赖，Maven仓库不仅仅存贮二进制文件，也存储了这些构建的元数据（metadata，即pom.xml），才使传递性依赖成为可能。
 
 
 
@@ -166,9 +150,13 @@ Hibernate那样）。你不必找出所有这些依赖然后把它们写在你�
 
 ### 4.1创建项目
 
+略
+
 
 
 ### 4.2添加依赖
+
+略
 
 
 
@@ -195,60 +183,60 @@ mvn test
 
 #### 4.3.3忽略失败的单元测试
 
-```
+```xml
 <project>
 [...]
-<build>
-<plugins>
-<plugin>
-<groupId>org.apache.maven.plugins</groupId>
-<artifactId>maven-surefire-plugin</artifactId>
-<configuration>
-<testFailureIgnore>true</testFailureIgnore>
-</configuration>
-</plugin>
-</plugins>
-</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 [...]
 </project>
 ```
 
-#### 4.3.4跳过单元测试
+#### *4.3.4跳过单元测试
 
-```
+```xml
 <project>
 [...]
-<build>
-<plugins>
-<plugin>
-<groupId>org.apache.maven.plugins</groupId>
-<artifactId>maven-surefire-plugin</artifactId>
-<configuration>
-<skip>true</skip>
-</configuration>
-</plugin>
-</plugins>
-</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 [...]
 </project>
 ```
 
 #### 4.3.5构建maven项目
 
-```
+```xml
 <project>
-<build>
-<plugins>
-<plugin>
-<artifactId>maven-assembly-plugin</artifactId>
-<configuration>
-<descriptorRefs>
-<descriptorRef>jar-with-dependencies</descriptorRef>
-</descriptorRefs>
-</configuration>
-</plugin>
-</plugins>
-</build>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                	<descriptorRefs>
+                		<descriptorRef>jar-with-dependencies</descriptorRef>
+                	</descriptorRefs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
 ```
 
@@ -258,7 +246,7 @@ mvn test
 mvn install assembly:assembly
 ```
 
-jar-with-dependencies 格式创建一个包含所有 simple-weather 项目的二进制代码以及所有依赖解压出来的二进制代码的 JAR 文件。 这个略微非常规的格式产生了一个 9MiB 大小的 JAR 文件，包含了大概 5290 个类。 但是它确实给那些使用 Maven 开发的应用程序提供了一个易于分发的格式。本书的后面，我们会说明如何创建一个自定义的装配描述符来生成一个更标准的分发包。
+jar-with-dependencies 格式创建一个包含所有 simple-weather 项目的二进制代码以及所有依赖解压出来的二进制代码的 JAR 文件。 这个略微非常规的格式产生了一个 9MiB 大小的 JAR 文件，包含了大概 5290 个类。 但是它确实给那些使用 Maven 开发的应用程序提供了一个易于分发的格式。本书的后面会**说明如何创建一个自定义的装配描述符来生成一个更标准的分发包。**
 
 
 
@@ -268,7 +256,7 @@ jar-with-dependencies 格式创建一个包含所有 simple-weather 项目的二
 
 一个多模块项目通过一个父POM引用一个或多个子模块来定义。父项目不像之前的项目那样创建一个JAR或者一个WAR，它仅仅是一个引用其它Maven项目的POM。父POM的正确打包类型应该是pom，举例如下：
 
-```
+```xml
 <groupId>org.sonatype.mavenbook.ch06</groupId>
 <artifactId>simple-parent</artifactId>
 <packaging>pom</packaging>
@@ -277,11 +265,11 @@ jar-with-dependencies 格式创建一个包含所有 simple-weather 项目的二
 
 当一个项目需要设定父项目时，则需要在pom中指定parent，举例如下：
 
-```
+```xml
 <parent>
-<groupId>org.sonatype.mavenbook.ch06</groupId>
-<artifactId>simple-parent</artifactId>
-<version>1.0</version>
+    <groupId>org.sonatype.mavenbook.ch06</groupId>
+    <artifactId>simple-parent</artifactId>
+    <version>1.0</version>
 </parent>
 ```
 
@@ -319,36 +307,36 @@ mvn clean install
 
 如果两个子POM同时引用了同一个插件，则可以将该插件放置到父POM中管理这个插件配置。举例如下：
 
-```
+```xml
 <project>
 ...
-<build>
-<pluginManagement>
-<plugins>
-<plugin>
-<groupId>org.apache.maven.plugins</groupId>
-<artifactId>maven-compiler-plugin</artifactId>
-<configuration>
-<source>1.5</source>
-<target>1.5</target>
-</configuration>
-</plugin>
-<plugin>
-<groupId>org.codehaus.mojo</groupId>
-<artifactId>hibernate3-maven-plugin</artifactId>
-<version>2.1</version>
-<configuration>
-<components>
-<component>
-<name>hbm2ddl</name>
-<implementation>annotationconfiguration</implementation>
-</component>
-</components>
-</configuration>
-</plugin>
-</plugins>
-</pluginManagement>
-</build>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.5</source>
+                        <target>1.5</target>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>hibernate3-maven-plugin</artifactId>
+                    <version>2.1</version>
+                    <configuration>
+                    <components>
+                        <component>
+                        <name>hbm2ddl</name>
+                        <implementation>annotationconfiguration</implementation>
+                    </component>
+                    </components>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 ...
 </project>
 ```
@@ -361,7 +349,7 @@ mvn clean install
 
 POM包含了四类描述和配置：
 1.项目总体信息
-它包含了一个项目的而名称，项目的URL，发起组织，以及项目的开发者贡献者列表和许可证。
+它包含了一个项目的名称，项目的URL，发起组织，以及项目的开发者贡献者列表和许可证。
 
 2.构建设置
 在这一部分，我们自定义Maven构建的默认行为。我们可以更改源码和测试代码的位置，可以添加新的插件，可以将插件目标绑定到生命周期，我们还可以自定义站点生成参数。
@@ -374,7 +362,7 @@ POM包含了四类描述和配置：
 
 
 
-### 7.1项目版本
+### *7.1项目版本
 
 一个Maven项目发布版本号用version编码，用来分组和排序发布。Maven中的版本包含
 了以下部分：**主版本，次版本，增量版本，和限定版本号**。一个版本中，这些部分对应
@@ -390,22 +378,206 @@ POM包含了四类描述和配置：
 
 #### 7.1.1 版本限定号
 
-我们还需要对版本号的限定版本进行排序。以版本号“1.2.3-alpha-2”和“1.2.3-alpha-10”为例，这里“alpha-2”对应了第二次alpha构建，而“alpha-10”对应了第十次alpha构建。虽然“alpha-10”应该被认为是比“alpha-2”更新的构建，但Maven排序的结果是“alpha-10”比“alpha-2”更旧，问题的原因就是我们刚才讨论的Maven处理版本号的方式。
-Maven会将限定版本后面的数字认作一个构建版本。换句话说，这里限定版本是“alpha”，而构建版本是2。虽然Maven被设计成将构建版本和限定版本分离，但目前这种解析还是失效的。因此，“alpha-2”和“alpha-10”是使用字符串进行比较的，而根据字母和数字“alpha-10”在“alpha-2”前面。要避开这种限制，你需要对你的限定版本使用一些技巧。如果你使用“alpha-02”和“alpha-10”，这个问题就消除了，一旦Maven能正确的解析版本构建号之后，这种工作方式也还是能用。
+我们还需要对版本号的限定版本进行排序。以版本号“1.2.3-alpha-2”和“1.2.3-alpha-10”为例，这里“alpha-2”对应
+
+了第二次alpha构建，而“alpha-10”对应了第十次alpha构建。虽然“alpha-10”应该被认为是比“alpha-2”更新的构
+
+建，但Maven排序的结果是“alpha-10”比“alpha-2”更旧，问题的原因就是我们刚才讨论的Maven处理版本号的方
+
+式。
+
+Maven会将限定版本后面的数字认作一个构建版本。换句话说，这里限定版本是“alpha”，而构建版本是2。虽然
+
+Maven被设计成将构建版本和限定版本分离，但目前这种解析还是失效的。因此，“alpha-2”和“alpha-10”是使用
+
+字符串进行比较的，而根据字母和数字“alpha-10”在“alpha-2”前面。要避开这种限制，你需要对你的限定版本使用
+
+一些技巧。如果你使用“alpha-02”和“alpha-10”，这个问题就消除了，一旦Maven能正确的解析版本构建号之后，
+
+这种工作方式也还是能用。
 
 
 
 #### 7.1.2 SNAPSHOT版本
 
-如果一个版本包含字符“SNAPSHOT”，Maven就会在安装或发布这个组件的时候将该符号展开为一个日期和时间值，转换为UTC（协调世界时）。
+如果一个版本包含字符“SNAPSHOT”，Maven就会在安装或发布这个组件的时候将该符号展开为一个日期和时间
 
-例如，如果你的项目有个版本为“1.0-SNAPSHOT”并且你将这个项目的构件部署到了一个Maven仓库，如果你在UTC2008年2月7号下午11:08部署了这个版本，Maven就会将这个版本展开成“1.0-20080207-230803-1”。换句话说，当你发布一个snapshot，你没有发布一个软件模块，你只是发布了一个特定时间的快照版本。
+值，转换为UTC（协调世界时）。
 
-那么为什么要使用这种方式呢？SNAPSHOT版本在项目活动的开发过程中使用。如果你的项目依赖的一个组件正处于开发过程中，你可以依赖于一个SNAPSHOT版本，在你运行构建的时候Maven会定期的从仓库下载最新的snapshot。类似的，如果你系统的下一个发布版本是“1.4”你的项目需要拥有一个“1.4-SNAPSHOT”的版本，之后它被正式发布。
+例如，如果你的项目有个版本为“1.0-SNAPSHOT”并且你将这个项目的构件部署到了一个Maven仓库，如果你在
 
-作为一个默认设置，Maven不会从远程仓库检查SNAPSHOT版本，要依赖于SNAPSHOT版本，用户必须在POM中使用repository和pluginRepository元素显式的开启下载snapshot的功能。当发布一个项目的时候，你需要解析所有对SNAPSHOT版本的依赖至正式发布的版本。如果一个项目依赖于SNAPSHOT，那么这个依赖很不稳定，它随时可能变化。发布到非snapshot的Maven仓库（如http://repo1.maven.org/maven2）的构件不能依赖于任何SNAPSHOT版本，因为Maven的超级POM对于中央仓库关闭了snapshot。SNAPSHOT版本只用于开发过程。
+UTC2008年2月7号下午11:08部署了这个版本，Maven就会将这个版本展开成“1.0-20080207-230803-1”。换句话
+
+说，当你发布一个snapshot，你没有发布一个软件模块，你只是发布了一个特定时间的快照版本。
+
+那么为什么要使用这种方式呢？SNAPSHOT版本在项目活动的开发过程中使用。如果你的项目依赖的一个组件正
+
+处于开发过程中，你可以依赖于一个SNAPSHOT版本，在你运行构建的时候Maven会定期的从仓库下载最新的
+
+snapshot。类似的，如果你系统的下一个发布版本是“1.4”你的项目需要拥有一个“1.4-SNAPSHOT”的版本，之后
+
+它被正式发布。
+
+作为一个默认设置，Maven不会从远程仓库检查SNAPSHOT版本，要依赖于SNAPSHOT版本，用户必须在POM中
+
+使用repository和pluginRepository元素显式的开启下载snapshot的功能。当发布一个项目的时候，你需要解析所
+
+有对SNAPSHOT版本的依赖至正式发布的版本。如果一个项目依赖于SNAPSHOT，那么这个依赖很不稳定，它随
+
+时可能变化。发布到非snapshot的Maven仓库（如http://repo1.maven.org/maven2）的构件不能依赖于任何
+
+SNAPSHOT版本，因为Maven的超级POM对于中央仓库关闭了snapshot。SNAPSHOT版本只用于开发过程。
 
 
 
 #### 7.1.3 LATEST和RELEASE版本
 
+当你依赖于一个插件或一个依赖，你可以使用特殊的版本值LATEST或者RELEASE。LATEST是指某个特定构件最新
+
+的发布版或者快照版(snapshot)，最近被部署到某个特定仓库的构件。RELEASE是指仓库中最后的一个非快照版
+
+本。总得来说，设计软件去依赖于一个构件的不明确的版本，并不是一个好的实践。如果你处于软件开发过程中，
+
+你可能想要使用RELEASE或者LATEST，这么做十分方便，你也不用为每次一个第三方类库新版本的发布而去更新
+
+你配置的版本号。但当你发布软件的时候，你总是应该确定你的项目依赖于某个特定的版本，以减少构建的不确定
+
+性。
+
+
+
+### *7.2 属性引用
+
+一个POM可以通过一对大括弧和前面一个美元符号来包含 对属性的引用。
+
+Maven提供了三个隐式的变量，可以用来访问环境变量，POM信息，和Maven Settings：
+
+#### 7.2.1 env
+
+env变量暴露了你操作系统或者shell的环境变量。例如${env.OS}获取操作系统
+
+
+
+#### 7.2.2 project
+
+project变量暴露了POM。你可以使用点标记（.）的路径来引用POM元素的值。例如：${project.artifactId}。
+
+
+
+#### 7.2.3 settings
+
+settings变量暴露了Maven settings信息。可以使用点标记（.）的路径来引用settings.xml文件中元素的值。例如，${settings.offline}会引用~/.m2/settings.xml文件中offline元素的值。
+
+
+
+### 7.3 项目依赖
+
+Maven可以管理内部和外部依赖。一个Java项目的外部依赖可能是如Plexus，SpringFramework，或者Log4J的类
+
+库。一个内部的依赖就比如自己在本地封装的jar包
+
+#### 7.3.1 范围依赖
+
+**1.compile（编译范围）**
+
+compile是默认的范围；如果没有提供一个范围，那该依赖的范围就是编译范围。编译范围依赖在所有的
+
+classpath中可用，同时它们也会被打包。
+
+**2.provided（已提供范围）**
+
+provided依赖只有在当JDK或者一个容器已提供该依赖之后才使用。说白了就是你的插件jar里添加了一个依赖（比
+
+如fastjson） 并且scope设置成provided  , 其中你的插件jar包里 方法用到了这个依赖（fastjson），那么你在新
+
+项目中引用插件jar的时候也要添加 fastjson这个依赖。
+
+**3.runtime（运行时范围）**
+
+runtime依赖在运行和测试系统的时候需要，但在编译的时候不需要。比如，你可能在编译的时候只需要JDBC API 
+
+JAR，而只有在运行的时候才需要JDBC驱动实现。
+
+**4.test（测试范围）**
+
+test范围依赖 在一般的 编译和运行时都不需要，它们只有在测试编译和测试运行阶段可用
+
+**5.system（系统范围）**
+
+system范围依赖与provided类似，但是你必须显式的提供一个对于本地系统中JAR文件的路径。这么做是为了允许
+
+基于本地对象编译，而这些对象是系统类库的一部分。这样的构件应该是一直可用的，Maven也不会在仓库中去
+
+寻找它。如果你将一个依赖范围设置成系统范围，你必须同时提供一个systemPath元素。注意该范围是不推荐使
+
+用的（你应该一直尽量去从公共或定制的Maven仓库中引用依赖）。
+
+
+
+#### 7.3.2 依赖版本界限
+
+你并不是必须为依赖声明某个特定的版本，你可以指定一个满足给定依赖的版本界限。例如，你可以指定你的项目
+
+依赖于JUnit的3.8或以上版本，或者说依赖于JUnit 1.2.10和1.2.14之间的某个版本。你可以使用如下的字符来围绕
+
+一个或多个版本号，来实现版本界限。
+
+```
+(, )
+不包含量词
+[, ]
+包含量词
+
+如：
+<dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <version>[3.8,4.0)</version>
+    <scope>test</scope>
+</dependency>
+```
+
+
+
+#### 7.3.3 传递性依赖
+
+一个传递性依赖就是对于一个依赖的依赖。如果project-a依赖于project-b，而后者接着依赖于project-c，那么
+
+project-c就被认为是project-a的传递性依赖。如果project-c依赖于project-d，那么project-d就也被认为是
+
+project-a的传递性依赖。Maven的部分吸引力是由于它能够管理传递性依赖，并且能够帮助开发者屏蔽掉跟
+
+踪所有编译期和运行期依赖的细节。你可以只依赖于一些包如Spring Framework，而不用担心Spring 
+
+Framework的所有依赖，Maven帮你自动管理了，你不用自己去详细了解配置。
+Maven是怎样完成这件事情的呢？它建立一个依赖图，并且处理一些可能发生的冲突和重叠。例如，如果Maven
+
+看到有两个项目依赖于同样的groupId和artifactId，它会自动整理出使用哪个依赖，选择那个最新版本的依赖。虽
+
+然这听起来很方便，但在一些边界情况中，传递性依赖会造成一些配置问题。在这种情况下，你可以使用依赖排
+
+除。
+
+
+
+#### 7.3.4 依赖排除
+
+有很多时候你需要排除一个传递性依赖，比如当你依赖于一个项目，后者又继而依赖于另外一个项目，但你的希望是，要么整个的排除这个传递性依赖，要么用另外一个提供同样功能的依赖来替代这个传递性依赖。
+
+```xml
+<dependency>
+    <groupId>org.sonatype.mavenbook</groupId>
+    <artifactId>project-a</artifactId>
+    <version>1.0</version>
+    <exclusions>
+        <exclusion>
+            <groupId>org.sonatype.mavenbook</groupId>
+            <artifactId>project-b</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+```
+
+
+
+## 8.构建profile
