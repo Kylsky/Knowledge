@@ -63,7 +63,7 @@ http://${host}/oauth/authorize?response_type=token&client_id=${client_id}&redire
 		if (authorizationRequest.getClientId() == null) {
 			throw new InvalidClientException("A client id must be provided");
 		}
-		//判断当前访问改地址的用户是否已经授权
+		//判断当前访问该地址的用户是否已经授权
 		try {
 
 			if (!(principal instanceof Authentication) || !((Authentication) principal).isAuthenticated()) {
