@@ -123,7 +123,7 @@ service nginx reload
 
 ### 检查nginx配置
 
-nginx -t
+/usr/local/nginx/sbin/nginx  -t
 
 ## 总结
 
