@@ -1,24 +1,26 @@
 # Nginx安装流程
 
-## 安装相关依赖
+## 1.安装相关依赖
 
-### 安装gcc
+### 1.1 安装gcc
 
 yum install -y gcc-c++
 
-### 安装pcre
+### 1.2 安装pcre
 
 yum install -y pcre pcre-devel
 
-### 安装zlib
+### 1.3 安装zlib
 
 yum install -y zlib zlib-devel
 
-### 安装openssl
+### 1.4 安装openssl
 
 yum install -y openssl openssl-devel
 
-## 安装nginx
+
+
+## 2.安装nginx
 
 ### 下载
 
@@ -48,7 +50,23 @@ nginx: [error] open() "/usr/local/nginx/logs/nginx.pid" failed (2: No such file 
 
  /usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf
 
-## nginx启动脚本
+
+
+## 3.配置环境变量
+
+在/etc/profile末尾加入环境变量
+
+```
+NGINX_HOME=/usr/local/nginx
+PATH=$PATH:$NGINX_HOME/sbin
+export NGINX_HOME PATH
+```
+
+保存后使用指令source /etc/profile更新环境变量
+
+
+
+## 4.nginx启动脚本
 
 在/etc/init.d中添加文件nginx并编辑
 
@@ -123,7 +141,7 @@ service nginx reload
 
 ### 检查nginx配置
 
-/usr/local/nginx/sbin/nginx  -t
+nginx  -t
 
 ## 总结
 
