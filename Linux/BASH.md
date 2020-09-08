@@ -347,3 +347,17 @@ grep [-acinv] [--color = auto] '搜 寻 字 串' filename
 **-n** ：顺 便 输 出 行 号 
 
 **-v** ：反 向 选 择， 亦 即 显 示 出 没 有 '搜 寻 字 串' 内 容 的 那 一 行
+
+
+
+#### 5.5 双向重导向：tee
+
+![image-20200908091243375](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20200908091243375.png)
+
+tee 会 同 时 将 数 据 流 分 送 到 文 件 与 屏 幕 （screen）； 而 输 出 到 屏 幕 的， 其 实 就 是 stdout。
+
+```
+tees [-a] file
+```
+
+-a ：以 累 加 （append） 的 方 式， 将 数 据 加 入 file 当 中
