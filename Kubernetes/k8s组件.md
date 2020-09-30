@@ -1,8 +1,8 @@
 # K8S组件
 
-当你部署一个k8s应用，你相当于部署了一个集群。k8s包含一组工作主机，称其为**nodes**，nodes用来运行容器化应用。每一个集群至少包含一个node。
+当你部署一个k8s应用，其实相当于部署了一个集群。k8s包含一组工作主机，称其为**nodes**，nodes用来运行容器化应用。每一个集群至少包含一个node。
 
-node中包含了**pods**，pods用来作为应用载体。**control plane**则用来管理nodes和pods。在生产环境中，一般control plane通常运行在多台机器上，一个集群也会有多个nodes，以此提供容错性和高可用性。
+node中包含了**pods**，pods用来作为应用载体。**control plane**则用来管理nodes和pods。生产环境中，一般control plane通常运行在多台机器上，一个集群也会有多个nodes，以此提供容错性和高可用性。
 
 ![Components of Kubernetes](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/components-of-kubernetes.svg)
 
@@ -126,7 +126,7 @@ Cluster DNS是一个dns 服务器，除了系统环境中的其他DNS服务器�
 
 
 
-### 3.2Web UI（Dashboard）
+### 3.2 Web UI（Dashboard）
 
 web ui是用于Kubernetes集群的通用的、基于web的UI。它允许用户管理并排除集群中运行的应用程序以及集群本身的故障。
 
