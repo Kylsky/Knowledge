@@ -90,7 +90,7 @@ ApplicationContext可真不是一个单纯的接口，居然继承了这么多�
 
 **MessageSource**
 
-一个字，国际化！虽然我不知道国际化到底是什么作用，只知道这能用于支持信息的国际化和包含参数的信息的替换，不够我想了解到这里暂时也够了
+一个字，国际化！虽然我不知道国际化到底是什么作用，只知道这能用于支持信息的国际化和包含参数的信息的替换，不过我想了解到这里暂时也够了
 
 **ApplicationEventPublisher**
 
@@ -143,7 +143,7 @@ ClassPathXmlApplicationContext有很多的构造方法，但很容易就可以�
 
 ```java
 public void refresh() throws BeansException, IllegalStateException {
-   // 来个锁，不然 refresh() 还没结束，你又来个启动或销毁容器的操作，那不就乱套了嘛
+   // 来个锁，不然 refresh() 还没结束，你又来个启动或销毁容器的操作，那就乱套了
    synchronized (this.startupShutdownMonitor) {
  
       //准备工作，记录下容器的启动时间、标记“已启动”状态、处理配置文件中的占位符

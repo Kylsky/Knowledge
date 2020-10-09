@@ -130,9 +130,9 @@ protected void customizeBeanFactory(DefaultListableBeanFactory beanFactory) {
 
 其实这也不难理解，如果BeanFactory存放的是实例Bean，那么即代表在容器创建完成后需要将应用中定义的所有Bean都进行实例化，但实际上可能大多数Bean都不是我们立即想使用的，这会导致应用**启动缓慢**，且非常**影响性能**，另外，倘若我想在程序运行时对Bean进行一些增强，这样做也并**不具有可拓展性**。
 
-所以拍脑袋一想就不难发现，如果BeanFactory中存放的只是一个Bean的定义，那么上述的问题都可以得到解决，BeanFactory只需要在用户需要使用Bean的时候为其创建（当然有些Bean可能需要应用运行时即创建），且能够通过修改Bean定义对其进行增强，这里我不禁要感叹这是多棒的设计啊
+所以拍脑袋一想就不难发现，如果BeanFactory中存放的只是一个Bean的定义，那么上述的问题都可以得到解决，BeanFactory只需要在用户需要使用Bean的时候为其创建（当然有些Bean可能需要应用运行时即创建），且能够通过修改Bean定义对其进行增强，不禁感叹这是多棒的设计啊~
 
-这里所说的Bean定义，在Spring对应的即为**BeanDefinition**，在上面的refreshBeanFactory方法中，可以发现，当BeanFactory被创建之后，他会在第一时间做**loadBeanDefinitions**操作，即将Bean定义加载到Bean工厂中，精彩内容要开始了！
+这里所说的Bean定义，在Spring对应的即为**BeanDefinition**，在上面的refreshBeanFactory方法中，可以发现，当BeanFactory被创建之后，他会在第一时间做**loadBeanDefinitions**操作，即——将Bean定义加载到Bean工厂中，精彩内容要开始了！
 
 
 
@@ -555,8 +555,6 @@ public BeanDefinitionHolder parseBeanDefinitionElement(Element ele, @Nullable Be
 		return null;
 }
 ```
-
-
 
 
 

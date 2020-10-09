@@ -121,7 +121,7 @@ public interface BeanPostProcessor {
 }
 ```
 
-官方的翻译理解起来是真的困难，简单来说，就是在beanDefinition被实例化，并完成了各项属性赋值后，这个bean仍会有一个初始化(init)操作，BeanPostProcessor就是负责在这个初始化操作之前和之后对bean进行一系列处理。
+官方的注释理解起来是真的困难，简单来说，就是在beanDefinition被实例化，并完成了各项属性赋值后，这个bean仍会有一个初始化(init)操作，BeanPostProcessor就是负责在这个初始化操作之前和之后对bean进行一系列处理。
 
 接下来再看看Aware接口
 
@@ -139,7 +139,7 @@ public interface Aware {
 }
 ```
 
-Aware，翻译过来是知道的，已感知的，意识到的，所以这些接口从字面意思应该是能感知到所有Aware前面的含义。不过这个接口下面啥都没有，真够抽象的，看来是把感知这一任务都交给自己的实现类了，就拿这回说的ApplicationContextAware举例吧：
+Aware，翻译过来是“知道的，已感知的，意识到的”，所以这些接口从字面意思应该是能感知到所有Aware前面的含义。不过这个接口下面啥都没有，真够抽象的，看来是把感知这一任务都交给自己的实现类了，就拿这回说的ApplicationContextAware举例吧：
 
 ```java
 public interface ApplicationContextAware extends Aware {
@@ -167,7 +167,7 @@ beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 
 ## 三、postProcessBeanFactory(beanFactory)
 
-postProcessBeanFactory后处理beanFactory。时机是在所有的beanDenifition加载完成之后，bean实例化之前执行。比如，在beanfactory加载完成所有的bean后，想修改其中某个bean的定义，或者对beanFactory做一些其他的配置，就可以用此方法。这里贴一下AbstractRefreshableWebApplicationContext对postProcessBeanFactory的实现,比较简单，就不细说了：
+postProcessBeanFactory在prepareBeanFactory方法后处理beanFactory。时机是在所有的beanDenifition加载完成之后，bean实例化之前执行。比如，在beanfactory加载完成所有的bean后，想修改其中某个bean的定义，或者对beanFactory做一些其他的配置，就可以用此方法。这里贴一下AbstractRefreshableWebApplicationContext对postProcessBeanFactory的实现，比较简单，就不细说了：
 
 ```java
 protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {

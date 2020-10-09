@@ -245,7 +245,7 @@ protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredTy
                         //注册依赖关系，后面会展开，可以先往下看
 						registerDependentBean(dep, beanName);
 						try {
-                            //初始化该依赖
+                            //实例化该依赖
 							getBean(dep);
 						}
 						catch (NoSuchBeanDefinitionException ex) {
@@ -255,10 +255,10 @@ protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredTy
 					}
 				}
 
-				// 当bean属于普通单例，则初始化该单例
+				// 当bean属于普通单例，则实例化该单例
 				if (mbd.isSingleton()) {
 					sharedInstance = getSingleton(beanName, () -> {
-                        //这里创建了Bean，很重要，之后展开
+                        //这里真正创建了Bean，很重要，之后展开
 						try {
 							return createBean(beanName, mbd, args);
 						}
@@ -340,7 +340,7 @@ protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredTy
 	private final Map<String, Set<String>> dependentBeanMap = new ConcurrentHashMap<>(64);
 ```
 
-这里存储的是被依赖者与依赖者的关系，比如User中有一项依赖叫Car，那么dependentBeanMap存储的就是carName:userName
+这里存储的是被依赖者与依赖者的关系，比如User中有一项依赖叫Car，那么dependentBeanMap存储的就是car:user
 
 
 
@@ -351,7 +351,7 @@ protected <T> T doGetBean(final String name, @Nullable final Class<T> requiredTy
 private final Map<String, Set<String>> dependenciesForBeanMap = new ConcurrentHashMap<>(64);
 ```
 
-这里就是和上面的反一反，userName:carName
+这里就是和上面的反一反，user:car
 
 现在就来看看代码把~
 
@@ -402,7 +402,7 @@ if (!dependentBeans.add(dependentBeanName)) {
 
 ## 七、createBean(beanName, mbd, args)
 
-第三个参数 args 数组代表创建实例需要的参数，就是给构造方法用的参数，或者是工厂 Bean 的参数。不过要注意的是在初始化阶段，args 是 null。create Bean的实现在AbstractAutowireCapableBeanFactory类中
+第三个参数 args 数组代表创建实例需要的参数，就是给构造方法用的参数，或者是工厂 Bean 的参数。不过要注意的是在初始化阶段，args 是 null。createBean的实现在AbstractAutowireCapableBeanFactory类中
 
 ```java
 protected Object createBean(String beanName, RootBeanDefinition mbd, @Nullable Object[] args)
@@ -489,7 +489,7 @@ protected Object doCreateBean(final String beanName, final RootBeanDefinition mb
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
 				try {
- 				 //简单来说就是对mbd做一些加工	
+ 				 //简单来说就是使用BeanPostProccessors对mbd做一些加工	
                  applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
 				catch (Throwable ex) {
@@ -540,7 +540,7 @@ protected Object doCreateBean(final String beanName, final RootBeanDefinition mb
 				}
 			}
 		}
-		// 注册bean为使用后即销毁
+		// 判断注册bean是否需要使用后即销毁
 		try {
 			registerDisposableBeanIfNecessary(beanName, bean, mbd);
 		}
@@ -558,7 +558,7 @@ doCreateBean方法真是细节拉满，分别来看看以下关键的几步
 
 可以发现createBeanInstance方法虽然创建了bean实例，但是返回的其实是一个BeanWrapper，他到底是个什么东西？
 
-其实BeanWrapper相当于一个容器，Spring委托BeanWrapperwancehngBean属性的填充工作。在Bean实例被创建出来之后，容器主控程序将Bean实例通过BeanWrapper包装起来，这是通过调用BeanWrapper的setWrappedInstance方法完成的。
+其实BeanWrapper相当于一个容器，Spring委托BeanWrapper完成Bean属性的填充工作。在Bean实例被创建出来之后，容器主控程序将Bean实例通过BeanWrapper包装起来，这是通过调用BeanWrapper的setWrappedInstance方法完成的。
 
 
 
