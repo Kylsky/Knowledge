@@ -1,6 +1,10 @@
 # Gateway+Eureka动态路由
 
-参考文章：https://zhuanlan.zhihu.com/p/96658614
+参考文章：
+
+```
+https://zhuanlan.zhihu.com/p/96658614
+```
 
 ## 1.前言
 
