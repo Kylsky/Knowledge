@@ -73,7 +73,7 @@ protected void initStrategies(ApplicationContext context) {
 }
 ```
 
-emmm，这样子看就已经一目了然了，对于SpringMVC来说，需要通过DispatcherServlet对应的上下文初始化以上额外的Bean。接下来简单介绍下，重要的部分会讲下实现。
+emmm，这样子看就已经一目了然了，对于SpringMVC来说，需要通过DispatcherServlet对应的上下文初始化以上额外的内容。接下来简单介绍下，重要的部分会讲下实现。
 
 ### 2.1 MultipartResolver
 
@@ -136,7 +136,7 @@ private void initHandlerMappings(ApplicationContext context) {
 
 ### 2.5 HandlerAdapters
 
-调用具体的方法对用户发来的请求来进行处理。当handlerMapping获取到执行请求的controller时，DispatcherServlte会根据controller对应的controller类型来调用相应的HandlerAdapter来进行处理。
+调用具体的方法对用户发来的请求来进行处理。当handlerMapping获取到执行请求的controller时，DispatcherServlet会根据controller对应的controller类型来调用相应的HandlerAdapter来进行处理。
 
 
 
@@ -148,7 +148,7 @@ private void initHandlerMappings(ApplicationContext context) {
 
 ### 2.7 RequestToViewNameTranslator
 
-根据request请求获取来组装视图名称
+根据request请求获取来组装视图名称	
 
 
 
