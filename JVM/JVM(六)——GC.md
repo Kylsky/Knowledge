@@ -18,15 +18,19 @@
 
 根搜索算法。当对象不再与GC Roots相关联时，该对象会被清理。GC Roots主要为以下内容：
 
-1.JVM Stack
+1.在 虚 拟 机 栈（ 栈 帧 中 的 本 地 变 量 表） 中 引 用 的 对 象， 譬 如 各 个 线 程 被 调 用 的 方 法 堆 栈 中 使 用 到 的 参 数、 局 部 变 量、 临 时 变 量 等。
 
-2.Native Method Stack
+2.本 地 方 法 栈 中 JNI（ 即 通 常 所 说 的 Native 方 法） 引 用 的 对 象。
 
-3.run-time-constant pool
+3.·在 方 法 区 中 常 量 引 用 的 对 象， 譬 如 字 符 串 常 量 池（ String Table） 里 的 引 用。
 
-4.Static References in Method Area
+4.在 方 法 区 中 类 静 态 属 性 引 用 的 对 象， 譬 如 Java 类 的 引 用 类 型 静 态 变 量。
 
-5.Clazz
+5.所 有 被 同 步 锁（ synchronized 关 键 字） 持 有 的 对 象。
+
+6.Java 虚 拟 机 内 部 的 引 用， 如 基 本 数 据 类 型 对 应 的 Class 对 象， 一 些 常 驻 的 异 常 对 象（ 比 如 NullPointExcepiton、 OutOfMemoryError） 等， 还 有 系 统 类 加 载 器。
+
+7.反 映 Java 虚 拟 机 内 部 情 况 的 JM Bean、 JVMTI 中 注 册 的 回 调、 本 地 代 码 缓 存 等。
 
 
 
