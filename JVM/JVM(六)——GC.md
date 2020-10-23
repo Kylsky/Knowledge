@@ -118,37 +118,69 @@ MajorGC/FullGC：在老年代无法继续分配空间时触发，新生代老年
 
 ## 五、常见的垃圾回收器
 
+jdk6-jdk14的垃圾收集器组合：
+
+https://cloud.tencent.com/developer/article/1620318
+
+
+
 ![GarbageCollectors](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/GarbageCollectors.jpg)
+
+![image-20201023142159372](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201023142159372.png)
+
+上 图 展 示 了 七 种 作 用 于 不 同 分 代 的 收 集 器， 如 果 两 个 收 集 器 之 间 存 在 连 线， 就 说 明 它 们 可 以 搭 配 使 用 [3] ，图 中 收 集 器 所 处 的 区 域， 则 表 示 它 是 属 于 新 生 代 收 集 器 抑 或 是 老 年 代 收 集 器。
 
 ### Serial
 
+![image-20201023142353143](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201023142353143.png)
+
 **新生代**收集器，采用复制算法。a stop-the-world(stw),copying collector which uses a single GC thread。工作线程在一个安全点上(safe point)停止工作，serial开始GC，现在GC使用极少。
+
+
 
 ### Parallel Scavenge
 
 **新生代**收集器，采用复制算法。a stop-the-world(stw),copying collector which uses multiple GC thread。多线程清理垃圾
 
+
+
 ### ParNew(Parallel New)
 
-**新生代**收集器，采用复制算法a stop-the-world(stw),copying collector which uses multiple GC thread。Parallel Scavenge的新版本，用来配合CMS使用，默认线程数为cpu的核数。
+![image-20201023143108124](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201023143108124.png)
+
+**新生代**收集器，实际上是Serial的并行版本。采用复制算法a stop-the-world(stw),copying collector which uses multiple GC thread。Parallel Scavenge的新版本，用来配合CMS使用，默认线程数为cpu的核数。
+
+ParNew 收 集 器 除 了 支 持 多 线 程 并 行 收 集 之 外， 其 他 与 Serial 收 集 器 相 比 并 没 有 太 多 创 新 之 处， 但 它 却 是 不 少 运 行 在 服 务 端 模 式 下 的 HotSpot 虚 拟 机， 尤 其 是 JDK 7 之 前 的 遗 留 系 统 中 首 选 的 新 生 代 收 集 器， 其 中 有 一 个 与 功 能、 性 能 无 关 但 其 实 很 重 要 的 原 因 是： 除 了 Serial 收 集 器 外， **目 前 只 有** 它 能 与 CMS 收 集 器 配 合 工 作。
+
+
 
 ### Serial Old
 
 **老年代**收集器，采用标记整理算法。a stop-the-world(stw),mark-sweep-compact collector that uses a single GC thread。与serial相似，只是gc算法不一样。现在基本不用
 
+
+
 ### Parallel Old
 
 **老年代**收集器，采用标记整理算法。a stop-the-world(stw),compacting collector which uses multiple GC thread。与Parallel相似
 
+
+
 ### CMS
 
-**老年代**收集器，采用标记清除算法1.4之后诞生。Concurrent Mark Sweep,CMS是里程碑式的GC。现代服务器的内存越来越大，因此回收线程的工作时长会很大，因此stw无法被忍受。CMS会在下面详细介绍。
+**老年代**收集器，Concurrent Mark Sweep,CMS是里程碑式的GC。采用标记清除算法，1.4之后诞生，这 款 收 集 器 是 HotSpot 虚 拟 机 中 第 一 款 真 正 意 义 上 支 持 并 发 的 垃 圾 收 集 器， 它 首 次 实 现 了 让 垃 圾 收 集 线 程 与 用 户 线 程（ 基 本 上） 同 时 工 作。现代服务器的内存越来越大，因此回收线程的工作时长会很大，因此stw无法被忍受。CMS会在下面详细介绍。
+
+
+
+
 
 ### G1
 
 在jdk1.7中使用，这里不详细介绍
 
-#### ZGC
+
+
+### ZGC
 
 在jdk11中使用，这里不详细介绍
 
