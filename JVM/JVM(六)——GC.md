@@ -140,23 +140,35 @@ https://cloud.tencent.com/developer/article/1620318
 
 ### Parallel Scavenge
 
-**新生代**收集器，采用复制算法。a stop-the-world(stw),copying collector which uses multiple GC thread。多线程清理垃圾
+**新生代**收集器，采用复制算法。a stop-the-world(stw),copying collector which uses multiple GC thread。多线程清理垃圾。
+
+Parallel Scavenge 收 集 器 的 特 点 是 它 的 关 注 点 与 其 他 收 集 器 不 同， CMS 等 收 集 器 的 关 注 点 是 尽 可 能 地 缩 短 垃 圾 收 集 时 用 户 线 程 的 停 顿 时 间， 而 Parallel Scavenge 收 集 器 的 目 标 则 是 达 到 一 个 可 控 制 的 吞 吐 量（ Throughput）。 所 谓 吞 吐 量 就 是 处 理 器 用 于 运 行 用 户 代 码 的 时 间 与 处 理 器 总 消 耗 时 间 的 比 值， 即：
+
+<img src="http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201023151310053.png" alt="image-20201023151310053" style="zoom:67%;" />
+
+
 
 
 
 ### ParNew(Parallel New)
 
-![image-20201023143108124](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201023143108124.png)
+<img src="http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201023143108124.png" alt="image-20201023143108124" style="zoom:67%;" />
 
 **新生代**收集器，实际上是Serial的并行版本。采用复制算法a stop-the-world(stw),copying collector which uses multiple GC thread。Parallel Scavenge的新版本，用来配合CMS使用，默认线程数为cpu的核数。
 
 ParNew 收 集 器 除 了 支 持 多 线 程 并 行 收 集 之 外， 其 他 与 Serial 收 集 器 相 比 并 没 有 太 多 创 新 之 处， 但 它 却 是 不 少 运 行 在 服 务 端 模 式 下 的 HotSpot 虚 拟 机， 尤 其 是 JDK 7 之 前 的 遗 留 系 统 中 首 选 的 新 生 代 收 集 器， 其 中 有 一 个 与 功 能、 性 能 无 关 但 其 实 很 重 要 的 原 因 是： 除 了 Serial 收 集 器 外， **目 前 只 有** 它 能 与 CMS 收 集 器 配 合 工 作。
 
+ParNew 收 集 器 是 激 活 CMS 后（ 使 用-XX： + UseConcMarkSweepGC 选 项） 的 默 认 新 生 代 收 集 器， 也 可 以 使 用-XX： +/-UseParNewGC 选 项 来 强 制 指 定 或 者 禁 用 它。
+
 
 
 ### Serial Old
 
-**老年代**收集器，采用标记整理算法。a stop-the-world(stw),mark-sweep-compact collector that uses a single GC thread。与serial相似，只是gc算法不一样。现在基本不用
+**老年代**收集器，采用标记整理算法。a stop-the-world(stw),mark-sweep-compact collector that uses a single GC thread。
+
+Serial Old 是 Serial 收 集 器 的 老 年 代 版 本， 它 同 样 是 一 个 单 线 程 收 集 器， 使 用 标 记-整 理 算 法。 这 个 收 集 器 的 主 要 意 义 也 是 供 客 户 端 模 式 下 的 HotSpot 虚 拟 机 使 用。 如 果 在 服 务 端 模 式 下， 它 也 可 能 有 两 种 用 途： 一 种 是 在 JDK 5 以 及 之 前 的 版 本 中 与 Parallel Scavenge 收 集 器 搭 配 使 用 [1] ，另 外 一 种 就 是 作 为 CMS 收 集 器 发 生 失 败 时 的 后 备 预 案， 在 并 发 收 集 发 生 Concurrent Mode Failure 时 使 用。
+
+<img src="http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201023152733624.png" alt="image-20201023152733624" style="zoom:67%;" />
 
 
 
@@ -164,13 +176,15 @@ ParNew 收 集 器 除 了 支 持 多 线 程 并 行 收 集 之 外， 其 �
 
 **老年代**收集器，采用标记整理算法。a stop-the-world(stw),compacting collector which uses multiple GC thread。与Parallel相似
 
+<img src="http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201023152850422.png" alt="image-20201023152850422" style="zoom:67%;" />
+
 
 
 ### CMS
 
 **老年代**收集器，Concurrent Mark Sweep,CMS是里程碑式的GC。采用标记清除算法，1.4之后诞生，这 款 收 集 器 是 HotSpot 虚 拟 机 中 第 一 款 真 正 意 义 上 支 持 并 发 的 垃 圾 收 集 器， 它 首 次 实 现 了 让 垃 圾 收 集 线 程 与 用 户 线 程（ 基 本 上） 同 时 工 作。现代服务器的内存越来越大，因此回收线程的工作时长会很大，因此stw无法被忍受。CMS会在下面详细介绍。
 
-
+![image-20201023155615681](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201023155615681.png)
 
 
 
@@ -222,11 +236,11 @@ stop-the-world，标记GC Roots
 
 #### 并发标记
 
-占用了CMS80%的GC时间，在这段时间与应用程序同时运行，应用程序产生垃圾的同时，CMS标记新的垃圾
+占用了CMS80%的GC时间，从 GC Roots 的 直 接 关 联 对 象 开 始 遍 历 整 个 对 象 图 的 过 程， 这 个 过 程 耗 时 较 长 但 是 不 需 要 停 顿 用 户 线 程， 可 以 与 垃 圾 收 集 线 程 一 起 并 发 运 行。
 
 #### 重新标记
 
-stop-the-world，标记并发标记间由于一些情况产生的未被标记的新垃圾
+stop-the-world，重 新 标 记 阶 段 则 是 为 了 修 正 并 发 标 记 期 间， 因 用 户 程 序 继 续 运 作 而 导 致 标 记 产 生 变 动 的 那 一 部 分 对 象 的 标 记 记 录（ 详 见 3.4.6 节 中 关 于 增 量 更 新 的 讲 解）， 这 个 阶 段 的 停 顿 时 间 通 常 会 比 初 始 标 记 阶 段 稍 长 一 些， 但 也 远 比 并 发 标 记 阶 段 的 时 间 短
 
 #### 并发清理
 
