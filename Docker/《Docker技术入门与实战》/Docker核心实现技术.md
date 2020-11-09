@@ -32,7 +32,7 @@ docker -H tcp:// 127.0.0.1: 1234 version
 
 ### 1.3 新的架构
 
-现， 使 用 Docker 时， 必 须 要 启 动 并 保 持 Docker Daemon 的 正 常 运 行， 它 既 要 管 理 容 器 的 运 行 时， 又 要 负 责 提 供 对 外 部 API 的 响 应。 而 一 旦 Docker Daemon 服 务 不 正 常， 则 已 经 运 行 在 Docker 主 机 上 的 容 器 也 往 往 无 法 继 续 使 用。 Docker 团 队 已 经 意 识 到 了 这 个 问 题， 在 较 新 的 版 本（ 1.11.0 +） 中， 开 始 将 维 护 容 器 运 行 的 任 务 放 到 一 个 单 独 的 组 件 containerd 中 来 管 理， 并 且 支 持 OCI 的 runc 规 范。 原 先 的 对 客 户 端 API 的 支 持 则 仍 然 放 在 Docker Daemon， 通 过 解 耦， 大 大 减 少 了 对 Docker Daemon 的 依 赖。
+使 用 Docker 时， 必 须 要 启 动 并 保 持 Docker Daemon 的 正 常 运 行， 它 既 要 管 理 容 器 的 运 行 时， 又 要 负 责 提 供 对 外 部 API 的 响 应。 而 一 旦 Docker Daemon 服 务 不 正 常， 则 已 经 运 行 在 Docker 主 机 上 的 容 器 也 往 往 无 法 继 续 使 用。 Docker 团 队 已 经 意 识 到 了 这 个 问 题， 在 较 新 的 版 本（ 1.11.0 +） 中， 开 始 将 维 护 容 器 运 行 的 任 务 放 到 一 个 单 独 的 组 件 containerd 中 来 管 理， 并 且 支 持 OCI 的 runc 规 范。 原 先 的 对 客 户 端 API 的 支 持 则 仍 然 放 在 Docker Daemon， 通 过 解 耦， 大 大 减 少 了 对 Docker Daemon 的 依 赖。
 
 
 
