@@ -10,6 +10,8 @@
 
 4.数据本地化读取
 
+
+
 ### 2.Hadoop相关项目
 
 #### 2.1 MapReduce
@@ -38,6 +40,8 @@ Flink属于实时计算
 
 ![image-20200731165422903](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20200731165422903.png)
 
+
+
 ### 4.理论知识点
 
 #### 4.1 存储模型
@@ -47,11 +51,13 @@ Flink属于实时计算
 - 一个文件除了最后一个block，其他block大小是一致的
 - block的大小依据硬件的I/O特性调整
 - block被分散存放在集群的节点中，具有location属性
-- block具有副本，没有住从概念，副本不能出现在同一个节点
+- block具有副本，没有主从概念，副本不能出现在同一个节点
 - 副本是满足可靠性和性能的关键
 - 文件上传可以指定block大小和副本数，上传后只能修改副本数
 - 一次写入多次读取，不支持修改
 - 支持追加数据
+
+
 
 #### 4.2 架构设计
 
@@ -71,6 +77,8 @@ Flink属于实时计算
 
   ![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/04a1596e-3866-4436-8ad4-b4f233db393f-2429517.jpg)
 
+
+
 #### 6.3 角色功能
 
 ##### 6.3.1 NameNode
@@ -79,11 +87,15 @@ Flink属于实时计算
 - 需要持久化方案保证数据可靠性
 - 提供副本放置策略
 
+
+
 ##### 6.3.2 DataNode
 
 - 基于本地磁盘存储文件block（文件的形式）
 - 保存block的校验和数据，保证block的可靠性
 - 与NameNode保持心跳，汇报blcok列表状态
+
+
 
 #### 6.4 元数据持久化
 
@@ -91,9 +103,11 @@ Flink属于实时计算
 - 使用FsImage存储内存所有的元数据状态
 - 使用本地磁盘保存EditLog和FsImage
 - EditLog具有完整性，数据丢失少，但恢复速度慢，并有体积膨胀风险
-- FsImage具有恢复速度快，体积与内存数据相当，但不能实时保存，数据丢失多
+- FsImage具有恢复速度快，体积与内存数据相当，但不能实时保存，容易产生数据丢失
 - NameNode使用了FsImage+EditLog整合的方案
-  - 滚动将增量的EditLog更新到FsImage，以保证更近时点的FsImage和更小的EditLog体积
+- 滚动将增量的EditLog更新到FsImage，以保证更近时点的FsImage和更小的EditLog体积
+
+
 
 #### 6.5 安全策略
 
@@ -113,19 +127,23 @@ Flink属于实时计算
 
 8.NameNode从所有的DataNode接收心跳信号和块状态报告
 
-9.每当NameNode检测确认某个数据块的副本数目达到这个最小值，那么该数据块就会被认为是副本安全的（safely replicated）的
+9.每当NameNode检测确认某个数据块的副本数目达到这个最小值，那么该数据块就会被认为是副本安全的（safely replicated）
 
-10.在一定百分比的数据块被NameNode检测确认是安全之后（加上一个额外的30秒等待时间，NameNode将退出安全模式
+10.在一定百分比的数据块被NameNode检测确认是安全之后（加上一个额外的30秒等待时间），NameNode将退出安全模式
 
 11.接下来NameNode会确定还有哪些数据块的副本没有达到指定数目，并将这些数据块复制到其他DataNode上
 
 12.HDFS中的SecondaryNameNode（SNN）
 
+```
 在非HA（高可用）模式下，SNN一般是独立的节点，周期完成对NN的EditLog向FsImage合并，减少EditLog大小，减少NN启动时间
 
 根据配置文件设置的时间间隔fs.checkpoint.period默认是3600秒
 
 根据配置文件设置EditLog大小fs.checkpoint.size规定edits文件的最大值默认是64MB
+```
+
+
 
 <img src="http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/dac38b28-7cd6-4cc1-b445-2c204c2caab6-2429517.jpg" alt="img" style="zoom: 67%;" />
 
@@ -162,6 +180,8 @@ Flink属于实时计算
   - HDFS使用这种传输方式，副本数对于client是透明的
   - 当block传输完成，DataNode各自向NameNode汇报，同时Client继续传输下一个block
   - 所以，client的传输和block的汇报也是并行的
+
+
 
 - HDFS读流程
 
