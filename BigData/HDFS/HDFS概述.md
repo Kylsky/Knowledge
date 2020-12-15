@@ -190,8 +190,9 @@ Flink属于实时计算
   - 为了降低整体的带宽消耗和读取延时，HDFS会尽量让读取程序读取离它最近的副本
   - 如果在读取程序的同一个机架上，那么客户端也将首先读取本地数据中心的副本
   - 语义：下载一个文件：
-    - Clienthe NameNode交互文件元数据获取fileBlockLocation
+    - Client和 NameNode交互文件元数据获取fileBlockLocation
     - NameNode尝试下载block并校验数据完整性
   - 语义：下载一个文件其实是获取文件的所有block元数据，那么子集获取某些block应该成立
     - HDFS支持client给出文件的offset（偏移量）自定义连接哪些block的DataNode，自定义获取数据
       - 这个是支持计算分层的分治、并行计算的核心，也是为什么分布式文件系统这么多，还是要开发出HDFS
+
