@@ -39,3 +39,14 @@ exportfs
 yum install -y nfs-utils
 
 showmount -e 192.168.10.10
+
+mkdir -p /usr/local/data/www-data
+
+mount 192.168.10.10:/usr/local/data/www-data /mnt
+
+cd /mnt 
+
+ll
+
+tips:文件并不真正存在与客户端，而是通过远程rpc映射到了客户端上
+
