@@ -2,7 +2,7 @@
 
 ## 一、MySQL基本架构图
 
-![img](http://kylescloud.top/site/pic/MySQLArchi.jpg)
+![img](http://119.23.64.10/site/pic/MySQLArchi.jpg)
 
 
 

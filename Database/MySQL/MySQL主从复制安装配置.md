@@ -67,10 +67,8 @@ service mysqld restart
 #登录mysql数据库
 mysql -uroot -p
 #查看master的状态
-show master status；
+show master st	atus；
 ```
-
-![1570703264912](E:\lian\oracle\typora-user-images\1570703264912.png)
 
 ### 8、重启从服务器并进行相关配置
 
