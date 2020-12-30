@@ -51,7 +51,7 @@ chown -R 1000:1000 /opt/jenkins/
 最后的jenkins:lts指的是jenkins版本，可能会不一样，可以在docker images中查看
 
 ```
-docker run -d -p 8888:8080 -p 50005:50000 --name jenkins-new -e JENKINS_OPTS="--prefix=/jenkins" -e JENKINS_ARGS="--prefix=/jenkins" -e JAVA_OPTS=-Duser.timezone=Asia/Shanghai --add-host=git.wenlvcloud.com:61.174.54.88 --add-host=repo.ctbiyi.com:140.249.193.206 --privileged=true -v /home/docker_data/jenkins_new:/var/jenkins_home jenkins/jenkins:2.164.3 
+docker run -d -p 8888:8080 -p 50005:50000 --name jenkins2 -e JENKINS_OPTS="--prefix=/jenkins" -e JENKINS_ARGS="--prefix=/jenkins" -e JAVA_OPTS=-Duser.timezone=Asia/Shanghai --add-host=git.wenlvcloud.com:61.174.54.88 --add-host=repo.ctbiyi.com:140.249.193.206 --privileged=true -v /home/docker_data/jenkins2:/var/jenkins_home jenkins/jenkins:2.164.3 
 ```
 
 容器启动后会有一个id，之后会用到，比如在这里我的id是
