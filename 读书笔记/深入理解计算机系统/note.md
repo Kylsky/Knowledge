@@ -73,3 +73,66 @@
 ## 磁盘读写操作
 
 ![image-20201229165018267](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201229165018267.png)
+
+
+
+## 缓存命中
+
+![image-20201231085212521](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201231085212521.png)
+
+![image-20201231085233657](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201231085233657.png)
+
+![image-20201231085314191](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201231085314191.png)
+
+
+
+## 缓存行
+
+![image-20201231090855221](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201231090855221.png)
+
+![image-20201231090904358](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201231090904358.png)
+
+![image-20201231090922679](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201231090922679.png)
+
+![image-20201231091326091](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201231091326091.png)
+
+
+
+## 直接映射高速缓存与读操作
+
+![image-20201231091909325](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201231091909325.png)
+
+![image-20201231091923436](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201231091923436.png)
+
+
+
+## 组相联高速缓存
+
+![image-20201231094858175](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201231094858175.png)
+
+
+
+## 全相联高速缓存
+
+![image-20201231095218726](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201231095218726.png)
+
+
+
+## 链接
+
+![image-20201231100357790](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201231100357790.png)
+
+
+
+## 链接器与动态链接器
+
+![image-20201231102957297](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201231102957297.png)
+
+
+
+## ECF(Exceptional Control Flow)
+
+<img src="http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20201231103918804.png" alt="image-20201231103918804" style="zoom: 33%;" />
+
+
+
