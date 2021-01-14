@@ -136,3 +136,43 @@
 
 
 
+## 地址空间
+
+<img src="http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20210113112737363.png" alt="image-20210113112737363" style="zoom:67%;" />
+
+
+
+## 虚拟内存
+
+<img src="http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20210113144918004.png" alt="image-20210113144918004" style="zoom:67%;" />
+
+![image-20210113144936653](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20210113144936653.png)
+
+
+
+## 内存映射
+
+内存映射可以减少拷贝，另外不会产生缓存不命中产生的缺页问题，引发磁盘的低性能IO寻址
+
+```
+https://blog.csdn.net/qq_33369979/article/details/109074372
+```
+
+![image-20210113150942270](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20210113150942270.png)
+
+
+
+## 共享对象
+
+![image-20210113154952563](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20210113154952563.png)
+
+
+
+## 写时复制
+
+举例：fork函数
+
+<img src="http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20210113171450167.png" alt="image-20210113171450167" style="zoom:67%;" />
+
+
+
