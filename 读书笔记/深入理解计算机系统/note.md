@@ -206,7 +206,7 @@ https://blog.csdn.net/qq_33369979/article/details/109074372
 
 
 
-## 共享文件
+## 共享文件 
 
 <img src="http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20210114102128954.png" alt="image-20210114102128954" style="zoom:67%;" />
 
@@ -269,3 +269,43 @@ socket创建后需要被打开，客户端中使用connect
 <img src="http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20210114142418156.png" alt="image-20210114142418156" style="zoom:67%;" />
 
 <img src="http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20210114142428685.png" alt="image-20210114142428685" style="zoom:67%;" />
+
+
+
+## 基于进程的并发编程
+
+![image-20210119100753173](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20210119100753173.png)
+
+
+
+## 进程并发的劣势
+
+进程间通信和进程控制的开销很高，因为他们并不共享用户地址空间
+
+![image-20210119105019118](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20210119105019118.png)
+
+
+
+## I/O多路复用（select）
+
+基本的思路就是使用select函数，要求内核挂起进程，只有在一个或多个I/O事件发生后，才将控制返回给应用程序。
+
+![image-20210119105247799](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20210119105247799.png)
+
+![image-20210119110530265](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20210119110530265.png)
+
+![image-20210119111002367](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20210119111002367.png)
+
+
+
+## 基于I/O多路复用的并发事件驱动服务器
+
+I/O多路复用可以用作并发事件程序的基础。首先通过select检测输入事件的发生，当连接描述符准备好可读时，执行状态机转移（输入事件->输出状态）
+
+
+
+## I/O多路复用技术优劣
+
+![image-20210119145518511](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20210119145518511.png)
+
+![image-20210119145548700](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20210119145548700.png)
