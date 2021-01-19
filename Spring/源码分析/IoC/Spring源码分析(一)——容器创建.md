@@ -2,9 +2,13 @@
 
 源码分析基于原文<https://blog.csdn.net/nuomizhende45/article/details/81158383>的基础做一些搬运以及自己的理解，侵删。另外，本文的Spring源码版本有点古老，但是对于spring原理的核心理解基本不会影响。
 
+
+
 ## 一、概述
 
 Spring的核心理念在于IOC和AOP，IOC，即Inversion Of Control，控制反转，即开发者在开发过程中对服务对象的控制完全依赖于Spring，而不需要自己手动操作。服务对象在Spring中的体现就是Bean，一个Dao可以是Bean，一个Service可以是Bean，一个定时任务可以是Bean，而Spring做的就是将这些Bean的定义（相当于元数据）注册到自己的Bean工厂中，当Bean被需要时，就将其定义从工厂中取出给开发者使用。
+
+
 
 ## 二、引出关键类
 
@@ -12,7 +16,7 @@ Bean是怎么被注册到工厂中的？工厂又是怎么样的？保留这些�
 
 ![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/1.png)
 
-![img](https://www.javadoop.com/blogimages/spring-context/2.png)
+![img](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/2.png)
 
 这两张图很复杂，但如果耐心观察可以发现一些有趣的东西：
 
@@ -24,7 +28,7 @@ Bean是怎么被注册到工厂中的？工厂又是怎么样的？保留这些�
 
 
 
-## 三、BeanFactory&ApplicationContext
+## 三、BeanFactory & ApplicationContext
 
 ### BeanFactory
 
@@ -86,11 +90,15 @@ ApplicationContext可真不是一个单纯的接口，居然继承了这么多�
 
 **HierarchicalBeanFactory**
 
-是AppllicationContext能够获取到他的父容器，并判断本地工厂是否包含这个Bean（忽略其他所有父工厂）。总的来说，HierarchicalBeanFactory提供了工厂的分层功能
+使AppllicationContext能够获取到他的父容器，并判断本地工厂是否包含这个Bean（忽略其他所有父工厂）。总的来说，HierarchicalBeanFactory提供了工厂的分层功能
 
 **MessageSource**
 
-一个字，国际化！虽然我不知道国际化到底是什么作用，只知道这能用于支持信息的国际化和包含参数的信息的替换，不过我想了解到这里暂时也够了
+一个字，国际化！关于国际化的应用，可以参考这篇文章做一个简单的了解
+
+```
+https://zhuanlan.zhihu.com/p/197736971
+```
 
 **ApplicationEventPublisher**
 
@@ -98,7 +106,7 @@ ApplicationContext可真不是一个单纯的接口，居然继承了这么多�
 
 **ResourcePatternResolver**
 
-用于解析资源文件的策略接口，其特殊的地方在于，它应该提供带有*号这种通配符的资源路径。
+用于解析资源文件的策略接口，其特殊的地方在于，它提供带有*号这种通配符的资源路径。
 
 一下子多了这么多能力，ApplicationContext牛逼！另外，需要注意的是ApplicationContext中还存在一个属性**AutowireCapableBeanFactory**，作为一个BeanFactory，它也足够引起重视——**用来自动装配 Bean**
 
@@ -126,6 +134,10 @@ public class App {
 ### 2.ClassPathXmlApplicationContext和refresh
 
 ```java
+public ClassPathXmlApplicationContext(String configLocation) throws BeansException {
+    this(new String[] {configLocation}, true, null);
+}
+
 public ClassPathXmlApplicationContext(String[] configLocations, boolean refresh, ApplicationContext parent)
       throws BeansException {
  
@@ -143,7 +155,7 @@ ClassPathXmlApplicationContext有很多的构造方法，但很容易就可以�
 
 ```java
 public void refresh() throws BeansException, IllegalStateException {
-   // 来个锁，不然 refresh() 还没结束，你又来个启动或销毁容器的操作，那就乱套了
+   // 来个锁，不然 refresh() 还没结束，又来个启动或销毁容器的操作，那就乱套了
    synchronized (this.startupShutdownMonitor) {
  
       //准备工作，记录下容器的启动时间、标记“已启动”状态、处理配置文件中的占位符
@@ -153,7 +165,7 @@ public void refresh() throws BeansException, IllegalStateException {
       // 注册也只是将这些信息都保存到了注册中心(说到底核心是一个 beanName-> beanDefinition 的 map)
       ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
       // 设置 BeanFactory 的类加载器，添加几个 BeanPostProcessor，手动注册几个特殊的 bean
-      // 这块待会会展开说
+      // 这块会展开说
       prepareBeanFactory(beanFactory);
       try {
          // 【这里需要知道 BeanFactoryPostProcessor 这个知识点，Bean 如果实现了此接口，
@@ -269,7 +281,8 @@ wow！我看到了什么？我看到了createBeanFactory()！点进去看吧
 
 ```java
 protected DefaultListableBeanFactory createBeanFactory() {
-        return new DefaultListableBeanFactory(this.getInternalParentBeanFactory());
+    // getInternalParentBeanFactory，设置父容器
+    return new DefaultListableBeanFactory(this.getInternalParentBeanFactory());
 }
 ```
 

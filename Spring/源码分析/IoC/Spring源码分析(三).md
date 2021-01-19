@@ -171,7 +171,7 @@ postProcessBeanFactory在prepareBeanFactory方法后处理beanFactory。时机�
 
 ```java
 protected void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
-    	//添加一个BeanPostProcessor，用于处理ServletContextAware
+    	//添加一个BeanPostProcessor，提供对ServletContext进行操作的能力
         beanFactory.addBeanPostProcessor(new ServletContextAwareProcessor(this.servletContext, this.servletConfig));
 
 beanFactory.ignoreDependencyInterface(ServletContextAware.class);
