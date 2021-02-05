@@ -49,52 +49,53 @@
 
 ```java
 protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
-		// 设置 BeanFactory 的类加载器，我们知道 BeanFactory 需要加载类，也就需要类加载器，这里设置为加载当前 ApplicationContext 类的类加载器
-		beanFactory.setBeanClassLoader(getClassLoader());
-		beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
-		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
+    // 设置 BeanFactory 的类加载器，我们知道 BeanFactory 需要加载类，也就需要类加载器，这里设置为加载当前 ApplicationContext 类的类加载器
+    beanFactory.setBeanClassLoader(getClassLoader());
+    beanFactory.setBeanExpressionResolver(new StandardBeanExpressionResolver(beanFactory.getBeanClassLoader()));
+    beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
 
-		// 这句话比较重要，点进去看看，后面有详细介绍，看完记得跳回来~
-		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
+    // 这句话比较重要，点进去看看，后面有详细介绍，看完记得跳回来~
+    beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 
-//下面几行的意思就是，如果某个 bean 依赖于以下几个接口的实现类，在自动装配的时候忽略它们，Spring 会通过其他方式来处理这些依赖。 
-beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
-beanFactory.ignoreDependencyInterface(EmbeddedValueResolverAware.class);
-beanFactory.ignoreDependencyInterface(ResourceLoaderAware.class);
-beanFactory.ignoreDependencyInterface(ApplicationEventPublisherAware.class);	beanFactory.ignoreDependencyInterface(MessageSourceAware.class);	beanFactory.ignoreDependencyInterface(ApplicationContextAware.class);
+    //下面几行的意思就是，如果某个 bean 依赖于以下几个接口的实现类，在自动装配的时候忽略它们，Spring 会通过其他方式来处理这些依赖。 
+    beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
+    beanFactory.ignoreDependencyInterface(EmbeddedValueResolverAware.class);
+    beanFactory.ignoreDependencyInterface(ResourceLoaderAware.class);
+    beanFactory.ignoreDependencyInterface(ApplicationEventPublisherAware.class);	beanFactory.ignoreDependencyInterface(MessageSourceAware.class);	beanFactory.ignoreDependencyInterface(ApplicationContextAware.class);
 
-/**
- * 下面几行就是为特殊的几个 bean 赋值，如果有 bean 依赖了以下几个，会注入这边相应的值，
- * 这里解释一下第一行，对于一个应用上下文，即整个spring实例，beanfactory也只是其持有的一个bean
- * ApplicationContext 还继承了 ResourceLoader、ApplicationEventPublisher、MessageSource
- * 所以对于这几个依赖，可以赋值为 this，注意 this 是一个 ApplicationContext
- * 那这里怎么没看到为 MessageSource 赋值呢？那是因为 MessageSource 被注册成为了一个普通的 bean
- */		beanFactory.registerResolvableDependency(BeanFactory.class, beanFactory);
-beanFactory.registerResolvableDependency(ResourceLoader.class, this);
-beanFactory.registerResolvableDependency(ApplicationEventPublisher.class, this);
-beanFactory.registerResolvableDependency(ApplicationContext.class, this);
+    /**
+     * 下面几行就是为特殊的几个 bean 赋值，如果有 bean 依赖了以下几个，会注入这边相应的值，
+     * 这里解释一下第一行，对于一个应用上下文，即整个spring实例，beanfactory也只是其持有的一个bean
+     * ApplicationContext 还继承了 ResourceLoader、ApplicationEventPublisher、MessageSource
+     * 所以对于这几个依赖，可以赋值为 this，注意 this 是一个 ApplicationContext
+     * 那这里怎么没看到为 MessageSource 赋值呢？那是因为 MessageSource 被注册成为了一个普通的 bean
+     */		
+    beanFactory.registerResolvableDependency(BeanFactory.class, beanFactory);
+    beanFactory.registerResolvableDependency(ResourceLoader.class, this);
+    beanFactory.registerResolvableDependency(ApplicationEventPublisher.class, this);
+    beanFactory.registerResolvableDependency(ApplicationContext.class, this);
 
-		// 这个 BeanPostProcessor 也很简单，在 bean 初始化后，如果是 ApplicationListener 的子类，
-   		// 那么将其添加到 listener列表中，可以理解成注册事件监听器
-		beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this));
+    // 这个 BeanPostProcessor 也很简单，在 bean 初始化后，如果是 ApplicationListener 的子类，
+    // 那么将其添加到 listener列表中，可以理解成注册事件监听器
+    beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this));
 
-		//这里涉及到特殊的 bean，名为：loadTimeWeaver，是AspectJ的内容，会执行运行时织入，暂时忽略
-		if (beanFactory.containsBean(LOAD_TIME_WEAVER_BEAN_NAME)) {
-			beanFactory.addBeanPostProcessor(new LoadTimeWeaverAwareProcessor(beanFactory));
-			// Set a temporary ClassLoader for type matching.
-			beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));
-		}
+    //这里涉及到特殊的 bean，名为：loadTimeWeaver，是AspectJ的内容，会执行运行时织入，暂时忽略
+    if (beanFactory.containsBean(LOAD_TIME_WEAVER_BEAN_NAME)) {
+        beanFactory.addBeanPostProcessor(new LoadTimeWeaverAwareProcessor(beanFactory));
+        // Set a temporary ClassLoader for type matching.
+        beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));
+    }
 
-		//如果没有定义以下bean，spring会进行初始化
-		if (!beanFactory.containsLocalBean(ENVIRONMENT_BEAN_NAME)) {
-			beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());
-		}
-		if (!beanFactory.containsLocalBean(SYSTEM_PROPERTIES_BEAN_NAME)) {
-			beanFactory.registerSingleton(SYSTEM_PROPERTIES_BEAN_NAME, getEnvironment().getSystemProperties());
-		}
-		if (!beanFactory.containsLocalBean(SYSTEM_ENVIRONMENT_BEAN_NAME)) {
-			beanFactory.registerSingleton(SYSTEM_ENVIRONMENT_BEAN_NAME, getEnvironment().getSystemEnvironment());
-		}
+    //如果没有定义以下bean，spring会进行初始化
+    if (!beanFactory.containsLocalBean(ENVIRONMENT_BEAN_NAME)) {
+        beanFactory.registerSingleton(ENVIRONMENT_BEAN_NAME, getEnvironment());
+    }
+    if (!beanFactory.containsLocalBean(SYSTEM_PROPERTIES_BEAN_NAME)) {
+        beanFactory.registerSingleton(SYSTEM_PROPERTIES_BEAN_NAME, getEnvironment().getSystemProperties());
+    }
+    if (!beanFactory.containsLocalBean(SYSTEM_ENVIRONMENT_BEAN_NAME)) {
+        beanFactory.registerSingleton(SYSTEM_ENVIRONMENT_BEAN_NAME, getEnvironment().getSystemEnvironment());
+    }
 }
 ```
 
