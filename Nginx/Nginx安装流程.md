@@ -2,6 +2,17 @@
 
 ## 1.安装相关依赖
 
+```
+内网安装文档：
+https://blog.csdn.net/lcczpp/article/details/108366968
+
+https://download.csdn.net/download/helloworld_in_java/10636836?utm_medium=distribute.pc_relevant_download.none-task-download-blogcommendfrombaidu-1.nonecase&depth_1-utm_source=distribute.pc_relevant_download.none-task-download-blogcommendfrombaidu-1.nonecase
+
+https://www.cnblogs.com/hanlaomo/p/10904672.html
+```
+
+
+
 ### 1.1 安装gcc
 
 yum install -y gcc-c++
