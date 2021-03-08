@@ -541,22 +541,8 @@ system范围依赖与provided类似，但是你必须显式的提供一个对于
 
 #### 7.3.3 传递性依赖
 
-一个传递性依赖就是对于一个依赖的依赖。如果project-a依赖于project-b，而后者接着依赖于project-c，那么
-
-project-c就被认为是project-a的传递性依赖。如果project-c依赖于project-d，那么project-d就也被认为是
-
-project-a的传递性依赖。Maven的部分吸引力是由于它能够管理传递性依赖，并且能够帮助开发者屏蔽掉跟
-
-踪所有编译期和运行期依赖的细节。你可以只依赖于一些包如Spring Framework，而不用担心Spring 
-
-Framework的所有依赖，Maven帮你自动管理了，你不用自己去详细了解配置。
-Maven是怎样完成这件事情的呢？它建立一个依赖图，并且处理一些可能发生的冲突和重叠。例如，如果Maven
-
-看到有两个项目依赖于同样的groupId和artifactId，它会自动整理出使用哪个依赖，选择那个最新版本的依赖。虽
-
-然这听起来很方便，但在一些边界情况中，传递性依赖会造成一些配置问题。在这种情况下，你可以使用依赖排
-
-除。
+一个传递性依赖就是对于一个依赖的依赖。如果project-a依赖于project-b，而后者接着依赖于project-c，那么project-c就被认为是project-a的传递性依赖。如果project-c依赖于project-d，那么project-d就也被认为是project-a的传递性依赖。Maven的部分吸引力是由于它能够管理传递性依赖，并且能够帮助开发者屏蔽掉跟踪所有编译期和运行期依赖的细节。你可以只依赖于一些包如Spring Framework，而不用担心Spring Framework的所有依赖，Maven帮你自动管理了，你不用自己去详细了解配置。
+Maven是怎样完成这件事情的呢？它建立一个依赖图，并且处理一些可能发生的冲突和重叠。例如，如果Maven看到有两个项目依赖于同样的groupId和artifactId，它会自动整理出使用哪个依赖，选择那个最新版本的依赖。虽然这听起来很方便，但在一些边界情况中，传递性依赖会造成一些配置问题。在这种情况下，你可以使用依赖排除。
 
 
 
@@ -581,3 +567,46 @@ Maven是怎样完成这件事情的呢？它建立一个依赖图，并且处理
 
 
 ## 8.构建profile
+
+注意：
+
+1.profiles通常是maven的最后一个元素
+
+2.一个profiles元素可以包含很多其他元素，只要这些元素可以出现在pom xml文档的project元素下面
+
+3.每个profile必须有一个id元素
+
+4.要使用指定profile，需要在mvn install后面传入-Pproduction，如mvn install -Pdev
+
+```xml
+<profiles>
+	<profile>
+    	<id></id>
+        <!-- 激活配置 -->
+        <activation>
+        	<jdk></jdk>
+            <os>
+            	<name></name>
+                <family></family>
+                <arch></arch>
+                <version></version>
+            </os>
+            <!-- 属性缺失激活 -->
+            <property>!environment.type</property>
+        </activation>
+        <build>
+        	<plugins>
+            	<plugin>
+                	<groupId></groupId>
+                    <artifactId></artifactId>
+                    <configuration>
+                    	<debug></debug>
+                        <optimize></optimize>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+</profiles>
+```
+
