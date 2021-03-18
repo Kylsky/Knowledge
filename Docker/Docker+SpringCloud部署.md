@@ -82,7 +82,7 @@ sudo docker pull elasticsearch:7.3.2
 
 sudo docker tag  d7052f192d01 elasticsearch:7.3.2
 
-sudo docker run -itd -p 9200:9200 -p 9300:9300  --privileged=true --name elasticsearch-server -e “discovery.type=single-node”  elasticsearch:7.3.2
+sudo docker run -itd -p 9200:9200 -p 9300:9300  --privileged=true --name elasticsearch-server -e "discovery.type=single-node"  elasticsearch:7.3.2
 
 #复制出配置
 sudo docker cp elasticsearch-server:/usr/share/elasticsearch/config/elasticsearch.yml /opt/elasticsearch.yml
@@ -95,7 +95,7 @@ http.cors.allow-origin: "*"
 sudo docker cp  /opt/elasticsearch.yml elasticsearch-server:/usr/share/elasticsearch/config/elasticsearch.yml 
 
 #校验部署是否完成，最后的/不能少
-curl http://xxxx:9200/
+curl http://localhost:9200/
 ```
 
 
@@ -110,14 +110,14 @@ sudo docker tag docker.elastic.co/kibana/kibana:7.3.2  kibana:7.3.2
 sudo docker run --name kibana7.3.2 --privileged=true --link elasticsearch-server:elasticsearch -e ELASTICSEARCH_HOSTS=http://elasticsearch:9200  -p 5601:5601 -d  kibana:7.3.2
 
 #进入容器后操作
-configvi config/kibana.yml
+vi config/kibana.yml
 #添加数据
 i18n.locale: "zh-CN"
 #退出容器
 exit
 
 #校验部署是否完成
-curl http://xxx:5601
+curl http://localhost:5601/
 ```
 
 
@@ -139,6 +139,5 @@ sudo docker run -itd --privileged=true -p 5043:5043 --name logstash-server --lin
 ```shell
 sudo docker run -d -v /usr/local/service/${服务名称}:/usr/local/webapps -v /home/security/js:/home/security/js  --restart=always --network host --privileged --name  ${服务名称} -w /usr/local/webapps  registry.cn-hangzhou.aliyuncs.com/kun/jre:urandom java -jar ${服务名称}.jar
 ```
-
 
 
