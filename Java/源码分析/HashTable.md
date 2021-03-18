@@ -218,7 +218,7 @@ public synchronized void clear() {
 
 
 
-### 3.扩容机制
+## 3.扩容机制
 
 HashTable的一些属性基本与HashMap没有太大差别，而且由于HashTable不存在红黑树等操作，因此相对简单，Enumeration类的属性作为历史遗留问题也不做介绍了，下面主要讲讲扩容机制吧。网上有一篇总结的比较好的文章，贴出部分内容，侵删：
 
@@ -234,7 +234,11 @@ Hashtable是线程相对安全的，所以Hashtable不需要考虑并发冲突�
 
 
 
+## 4.关于键值null的约束
 
+```
+https://juejin.cn/post/6844904023363960839
+```
 
 
 
