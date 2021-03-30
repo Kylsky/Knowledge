@@ -129,15 +129,25 @@ sudo docker pull docker.elastic.co/logstash/logstash:7.3.2
 
 sudo docker tag docker.elastic.co/logstash/logstash:7.3.2  logstash:7.3.2
 
-sudo docker run -itd --privileged=true -p 5043:5043 --name logstash-server --link elasticsearch-server:elasticsearch logstash:7.3.2
+sudo docker run -itd --privileged=true -p 5043:5043 --name logstash-server --link elasticsearch-server:elasticsearch --link rabbitmq:rabbitmq logstash:7.3.2
 ```
 
 
 
-# 8.通用应用部署
+# 8.redis5.0.12
+
+```
+docker pull redis:5.0.12
+mkdir -p /root/redis/data /root/redis/conf
+touch /root/redis/conf/redis.conf
+docker run -d --restart=always --name redis5.0.12 -p 6379:6379 -v /root/redis/conf/redis.conf:/redis.conf -v /root/redis/data:/data redis:5.0.12 redis-server --appendonly yes --requirepass "123456"
+```
+
+
+
+# 9.通用应用部署
 
 ```shell
 sudo docker run -d -v /usr/local/service/${服务名称}:/usr/local/webapps -v /home/security/js:/home/security/js  --restart=always --network host --privileged --name  ${服务名称} -w /usr/local/webapps  registry.cn-hangzhou.aliyuncs.com/kun/jre:urandom java -jar ${服务名称}.jar
 ```
-
 
