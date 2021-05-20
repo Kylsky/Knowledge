@@ -1,6 +1,6 @@
 # K8S组件
 
-当你部署一个k8s应用，其实相当于部署了一个集群。k8s包含一组工作主机，称其为**nodes**，nodes用来运行容器化应用。每一个集群至少包含一个node。
+当你部署一个k8s应用，其实相当于部署了一个集群。k8s包含一组工作主机，称其为**nodes**，nodes用来运行容器化应用。每一个集群至少包含一个工作node。
 
 node中包含了**pods**，pods用来作为应用载体。**control plane**则用来管理nodes和pods。生产环境中，一般control plane通常运行在多台机器上，一个集群也会有多个nodes，以此提供容错性和高可用性。
 
@@ -40,7 +40,7 @@ api server用于提供k8s的api，api server 是control plane的前端。kube-ap
 
 逻辑上，每一个controller应该是一个独立的进程，但是为了减少复杂度，它们被编译成二进制文件并运行在同一个进程中。
 
-cotroller包括了：
+controller包括了：
 
 **Node Controller**：
 

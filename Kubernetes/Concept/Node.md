@@ -98,3 +98,19 @@ InternalIP：通常是仅在集群内可路由的节点的IP地址
 | PIDPressure        | 如果进程存在压力(即节点上进程太多)，则为True;否则false       |
 | NetworkUnavailable | 如果节点的网络没有正确配置，则为True，否则为False            |
 
+
+
+### 4.3 容量与分配
+
+描述节点上的可用资源：CPU、内存和可以调度到节点上的 Pod 的个数上限。
+
+`capacity` 块中的字段标示节点拥有的资源总量。 
+
+`allocatable` 块指示节点上可供普通 Pod 消耗的资源量。
+
+
+
+### 4.4 信息
+
+关于节点的一般性信息，例如内核版本、Kubernetes 版本（`kubelet` 和 `kube-proxy` 版本）、 Docker 版本（如果使用了）和操作系统名称。这些信息由 `kubelet` 从节点上搜集而来。
+
