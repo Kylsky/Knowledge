@@ -11,3 +11,5 @@ java从入门到入土，以及一些无聊的小知识
 涉及图片裂开、发现文章错误等问题请联系
 
 微信：kkkkksky
+
+公众号：my_universal_dream
