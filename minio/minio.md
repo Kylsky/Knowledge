@@ -42,8 +42,8 @@ docker run -p 9000:9000 --name minio \
 
 ```
 192.168.1.116:9000
-pubinfo
-Pubinfo918@
+hello
+123456
 ```
 
 
