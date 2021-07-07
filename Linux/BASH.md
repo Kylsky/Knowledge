@@ -40,7 +40,7 @@ read [-pt] 变量名
 
 -p ：后 面 可 以 接 提 示 字 符
 
--t ：后 面 可 以 接 等 待 的“ 秒 数！” 
+-t ：后 面 可 以 接 等 待 的“ 秒 数” 
 
 ```
 read -p "Please enter a key" name
