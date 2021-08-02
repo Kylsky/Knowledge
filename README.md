@@ -13,3 +13,5 @@ java从入门到入土，以及一些无聊的小知识
 微信：kkkkksky
 
 公众号：my_universal_dream
+
+小程序：理想与黑洞
