@@ -96,7 +96,7 @@ public class Test {
 
 ### 伪共享
 
-![img](http://www.kylescloud.top/site/pic/falseshare.jpg)
+![image-20210805091531225](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20210805091531225.png)
 
 对于一台拥有多个核的主机来说，这些cpu共享l3及以下的缓存，但是l1、l2的缓存却是独有的，因此会引发数据不一致的问题。从前该问题的解决方法是通过在l3上加上**总线锁**，即当某个l2访问l3时其他l2会阻塞。阻塞运行的方式会导致效率偏低。**新的CPU使用各种各样的缓存一致性协议，如MESI(Intel)**。
 

@@ -22,7 +22,7 @@
 
 **3.resolution**
 
-将符号引用转换为内存地址
+将符号引用转换为内存地址。解析动作主要针对**类或接口、字段、类方法、接口方法、方法类型、方法句柄**和**调用点限定符**这7类符号引用进行。
 
 
 
@@ -36,7 +36,7 @@
 
 ![classloader](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/classloader.jpg)
 
-当一个class文件被load到内存中时，内存为class开辟两个区域，一个区域用来存储class文件中的二进制数，另一个区域用于存放创建的java语义下的class对象，该对象指向内存中的class二进制文件。上图**需要注意的是**，BootStrap加载器时c++实现的模块，所以在java代码中无法找到，而下面的ExtClassLoader和AppClassLoader虽然使用java代码实现，但是这两者或这三者不存在继承关系，且ExtClassLoader和AppClassLoader属于Lanucher类的内部类，它们的类加载器由c++实现，不存在层级关系。
+当一个class文件被load到内存中时，内存为class开辟两个区域，一个区域用来存储class文件中的二进制数，另一个区域用于存放创建的java语义下的class对象，该对象指向内存中的class二进制文件。上图**需要注意的是**，BootStrap加载器是c++实现的模块，所以在java代码中无法找到，而下面的ExtClassLoader和AppClassLoader虽然使用java代码实现，但是这两者或这三者不存在继承关系，且ExtClassLoader和AppClassLoader属于Lanucher类的内部类，它们的类加载器由c++实现，不存在层级关系。
 
 
 
@@ -50,7 +50,7 @@ protected Class<?> loadClass(String name, boolean resolve)
 {
     synchronized (getClassLoadingLock(name)) {
         // First, check if the class has already been loaded
-        //检查class是否已经被加载
+        //检查class是否已经被加载到缓存中
         Class<?> c = findLoadedClass(name);
         if (c == null) {
             long t0 = System.nanoTime();

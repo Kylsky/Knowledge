@@ -249,7 +249,7 @@ static final int hash(Object key) {
     }
 ````
 
-jdk1.8的hash算法是将key的hashCode与其右移16为的抑或结果。抑或：若位相等，则返回0，不相等则返回1
+jdk1.8的hash算法是将key的hashCode与其右移16位的或结果。
 
 **问：**为什么不直接用hashCode？
 
@@ -304,7 +304,7 @@ final Node<K,V> getNode(int hash, Object key) {
 
 ### containsValue(Object  value)
 
-比价好理解，不贴代码了，时间复杂度为O(n^2)
+比较好理解，不贴代码了，时间复杂度为O(n^2)
 
 ### put(K,V)
 
