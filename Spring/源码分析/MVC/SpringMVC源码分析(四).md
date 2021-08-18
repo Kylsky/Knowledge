@@ -2,7 +2,7 @@
 
 上一节讲到了DispatcherServlet的doDispatch方法分发请求的内容，主要涉及了HandlerExecutionChain、HandlerMapping、HandlerAdapter、Handler等类，在请求成功转发到Handler之后，HandlerAdapter就会对其进行处理，在一切开始之前，老规矩，放一下springmvc处理请求的流程图：
 
-![springmvcarch](http://kylescloud.top/site/pic/springmvcarch.jpg)
+![微信图片_20210818135407](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/%25E5%25BE%25AE%25E4%25BF%25A1%25E5%259B%25BE%25E7%2589%2587_20210818135407.jpg)
 
 然后再来看看本节会继续介绍的内容
 
@@ -147,7 +147,7 @@ ServletInvocableHandlerMethod继承了InvocableHandlerMethod，实际上就是�
 
 #### ModelAndViewContainer
 
-比较好理解了，用于存方ModelAndView。
+比较好理解了，用于存放ModelAndView。
 
 
 
@@ -214,7 +214,7 @@ protected ModelAndView invokeHandlerMethod(HttpServletRequest request,
 }
 ```
 
-关于invokeHandlerMethod里涉及到的一些方法我都没有贴出来，因为调用的方法链路太多了，贴出来反而容易影响思路。而且在我看来上面的代码逻辑已经很清晰了，处理请求参数，封装ModelAndView，然后通过反射执行特定的方法，将返回结果封装为ModelAndView。现在可以回到doDispatch方法继续往下了~
+关于invokeHandlerMethod里涉及到的一些方法我都没有贴出来，因为调用的方法链路太多了，贴出来反而容易影响思路。而且在我看来上面的代码逻辑已经比较清晰了，处理请求参数，封装ModelAndView，然后通过反射执行特定的方法，将返回结果封装为ModelAndView。现在可以回到doDispatch方法继续往下了~
 
 
 

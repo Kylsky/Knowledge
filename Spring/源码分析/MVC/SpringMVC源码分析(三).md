@@ -1,6 +1,6 @@
 ## 1.回顾
 
-![springmvcarch](http://kylescloud.top/site/pic/springmvcarch.jpg)
+![微信图片_20210818135407](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/%25E5%25BE%25AE%25E4%25BF%25A1%25E5%259B%25BE%25E7%2589%2587_20210818135407.jpg)
 
 上一次讲到了请求进入DispatcherServlet的doService方法中执行一系列操作，最终会进入**doDispatch(request, response)**方法开始执行请求的转发，这一节就从这里开始继续。
 
@@ -10,7 +10,7 @@
 
 ## 2.doDispatch之前
 
-在上节提到的doDispatch方法，其实就是整个springmvc的关键所在，在看代码之前，有些类必须要来回顾或认实一下
+在上节提到的doDispatch方法，其实就是整个springmvc的关键所在，在看代码之前，有些类必须要来回顾或认识一下
 
 ### 2.1 HandlerMapping
 
@@ -80,7 +80,7 @@ protected void doDispatch(HttpServletRequest request, HttpServletResponse respon
                     return;
                 }
                 //到此，HandlerExecutionChain已经获取成功了
-				//接下来是获取HandlerAdapter，它是真正处理Handler的家伙，代码分析见3.2
+			   //接下来是获取HandlerAdapter，它是真正处理Handler的家伙，代码分析见3.2
                 HandlerAdapter ha = this.getHandlerAdapter(mappedHandler.getHandler());
                 String method = request.getMethod();
                 //get方法的last-modified请求头判断，不重要，就略过了
@@ -167,7 +167,7 @@ public final HandlerExecutionChain getHandler(HttpServletRequest request) throws
                 //handler为string类型，则通过容器获取bean
                 handler = this.obtainApplicationContext().getBean(handlerName);
             }
-			//关键的代码，通过handler和request封装int点进去看下CHainhain,点进去看下
+			//关键的代码，通过handler和request封装，点进去看下
             HandlerExecutionChain executionChain = this.getHandlerExecutionChain(handler, request);
             ……
             return executionChain;

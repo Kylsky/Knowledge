@@ -53,7 +53,8 @@ public class DemoEvent extends ApplicationEvent{      
 ## 1.3 事件发布
 
 ```java
-@Component  public class DemoPublisher {      
+@Component  
+public class DemoPublisher {      
     @Autowired      
     ApplicationContext applicationContext; //1  
     
@@ -233,7 +234,7 @@ public class ConditionConifg {      
 ```java
 @RunWith(SpringJUinit4ClassRunner.class)
 @ContextConfiguration(classes = {TestConfig.class})
-@ActiveProdiles("prod")
+@ActiveProfiles("prod")
 public class DemoBeanIntegrationTests{
 	@Autowired
 	private TestBean testBean;
@@ -329,9 +330,17 @@ public void addViewControllers(ViewControllerRegistry registry) {      
 
 用来设置WebDataBinder，WebDataBinder用来自动绑定前台请求参数到model中
 
+```
+https://blog.csdn.net/wang0907/article/details/108357696
+```
+
 ## @ModelAttribute
 
 让全局的@RequestMapping都能获得在此处设置的键值对
+
+```
+https://blog.csdn.net/li_xiao_ming/article/details/8349115
+```
 
 
 

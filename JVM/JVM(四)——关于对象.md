@@ -44,7 +44,7 @@ markword，8字节
 
 #### 4.padding对齐
 
-8字节的倍数，cpu缓存读取数据时通常取64字节，padding对齐可以提高读取对象数据的效率
+8字节的倍数，cpu缓存读取数据时通常取64位（8字节），padding对齐可以提高读取对象数据的效率
 
 
 
@@ -66,7 +66,7 @@ markword，8字节
 
 ## 四、对象头包含的信息
 
-![img](http://www.kylescloud.top/site/pic/markword.jpg)
+![image-20210805092427327](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/image-20210805092427327.png)
 
 
 

@@ -2,7 +2,7 @@
 
 之前讲了WEB容器启动时涉及到的Spring容器及MVC相关的初始化，在初始化完成之后，SpringMVC就能开始处理web请求了，其实呢，SpringMVC底层的实现其实是通过对servlet进行了一层封装来处理web请求，在开始分析代码之前，首先了解下springmvc处理请求的整个流程，只需要看个大概即可。
 
-![springmvcarch](http://kylescloud.top/site/pic/springmvcarch.jpg)
+![微信图片_20210818135407](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/%25E5%25BE%25AE%25E4%25BF%25A1%25E5%259B%25BE%25E7%2589%2587_20210818135407.jpg)
 
 先对各模块的名字熟悉一下，在我看来Spring处理请求的总体流程还是比较经典的java web处理方式，要对整个spring mvc的工作原理和工作流程进行具体的了解，其实随便跑一个项目运行一下debug模式就能进行。这里拿手头的一个项目作为例子
 
@@ -20,9 +20,7 @@ public List<InterviewLog> findAll(){
 
 这是在一个controller里的一个方法实现，如果在浏览器输入localhost:1234/interview/findAll就能进到该方法，在方法第一行打个断点，启动程序，即可观察整个springmvc的运行流程，浏览器发出请求被服务器接收，服务端会跑起一个线程以执行任务，包括建立三次握手、请求过滤等操作，这些都不细说了，由于本次重点分析的是Spring的MVC，所以一切就从有关servlet的处理开始。开到以下红线处，就从这里讲起吧
 
-<img src="C:\Users\Kyle\AppData\Roaming\Typora\typora-user-images\image-20200507141713761.png" alt="image-20200507141713761" style="zoom:67%;" />
-
-
+![微信图片_20210818135458](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/%25E5%25BE%25AE%25E4%25BF%25A1%25E5%259B%25BE%25E7%2589%2587_20210818135458.jpg)
 
 ## 一、service
 

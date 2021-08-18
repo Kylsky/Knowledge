@@ -26,7 +26,7 @@
 
 ### -XX:+UseParallelGC
 
-使用parallel scavenge + parallel old
+jdk8默认使用的gc，使用parallel scavenge + parallel old
 
 ### -XX:+UseParallelOldGC
 
@@ -70,7 +70,7 @@ stw(stop-the-world)越短，响应时间越好。网站、GUI、API等任务需�
 
 ### 2.什么是调优
 
-①根据需求进行JVM规划核预调优
+①根据需求进行JVM规划和预调优
 
 ②优化运行JVM运行环境
 

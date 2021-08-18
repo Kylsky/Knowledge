@@ -53,7 +53,7 @@ scp -r <需要拷贝的内容> <目标ip地址或host>:'pwd'
 
 zkServer.sh start或者zsServer.sh start-foreground
 
-### 
+
 
 ## 六、检查启动
 

@@ -16,7 +16,7 @@ DispatchServlet 和 ContextLoaderListener 提 供 了 在 Web 容 器 中 对 Sp
 
 ### 2.1 IoC容器的创建
 
-IoC 容 器 的 启 动 过 程 就 是 建 立 上 下 文 的 过 程， 该 上 下 文 是 与 ServletContext 相 伴 而 生 的， 同 时 也 是 IoC 容 器 在 Web 应 用 环 境 中 的 具 体 表 现 之 一。 由 ContextLoaderListener 启 动 的 上 下 文 为 根 上 下 文。 在 根 上 下 文 的 基 础 上， 还 有 一 个 与 Web MVC 相 关 的 上 下 文 用 来 保 存 控 制 器（ DispatcherServlet） 需 要 的 MVC 对 象， 作 为 根 上 下 文 的 子 上 下 文， 构 成 一 个 层 次 化 的 上 下 文 体 系。 在 Web 容 器 中 启 动 Spring 应 用 程 序 时， 首 先 建 立 根 上 下 文， 然 后 建 立 这 个 上 下 文 体 系 的， 这 个 上 下 文 体 系 的 建 立 是 由 ContextLoder 来 完 成 的。
+IoC 容 器 的 启 动 过 程 就 是 建 立 上 下 文 的 过 程， 该 上 下 文 是 与 ServletContext 相 伴 而 生 的， 同 时 也 是 IoC 容 器 在 Web 应 用 环 境 中 的 具 体 表 现 之 一。 由 ContextLoaderListener 启 动 的 上 下 文 为 根 上 下 文。 在 根 上 下 文 的 基 础 上， 还 有 一 个 与 Web MVC 相 关 的 上 下 文 用 来 保 存 控 制 器（ DispatcherServlet） 需 要 的 MVC 对 象， 作 为 根 上 下 文 的 子 上 下 文， 构 成 一 个 层 次 化 的 上 下 文 体 系。 在 Web 容 器 中 启 动 Spring 应 用 程 序 时， 首 先 建 立 根 上 下 文， 然 后 建 立 这 个 上 下 文 体 系， 这 个 上 下 文 体 系 的 建 立 是 由 ContextLoder 来 完 成 的。
 
 ContextLoaderListener 是 Spring 提 供 的 类， 是 为 在 Web 容 器 中 建 立 IoC 容 器 服 务 的， 它 实 现 了 ServletContextListener 接 口。 这 个 接 口 是 在 Servlet API 中 定 义 的， 提 供 了 与 Servlet 生 命 周 期 结 合 的 回 调， 比 如 contextInitialized 方 法 和 contextDestroyed 方 法。在 web 容 器 中， **建 立 WebApplicationContext 的 过 程**， 是 在 contextInitialized 的 接 口 实 现 中 完 成 的。 具 体 的 载 入 IoC 容 器 的 过 程 是 由 ContextLoaderListener 交 由 ContextLoader 来 完 成 的， 而 ContextLoader 本 身 就 是 ContextLoaderListener 的 基 类。
 

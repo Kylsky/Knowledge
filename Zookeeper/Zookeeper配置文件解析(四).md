@@ -2,7 +2,7 @@
 
 以下是zookeeper安装的默认配置，更多配置可以参考文章：https://www.cnblogs.com/likui360/p/5985588.html
 
-```
+```properties
 # The number of milliseconds of each tick
 tickTime=2000
 # The number of ticks that the initial 

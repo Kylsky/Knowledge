@@ -421,7 +421,7 @@ server
 
 **说明：**
 
-location会尝试根据用户请求的uro匹配，若成功，就选择该块处理用户请求
+location会尝试根据用户请求的uri匹配，若成功，就选择该块处理用户请求
 
 ```nginx
 1) =表示把uri作为字符串，以便与参数中的uri做完全匹配
@@ -471,6 +471,8 @@ location /download/ {
 	root /opt/web/html;
 }
 ```
+
+
 
 ### 5.2.2 以alias方式设置资源路径
 
@@ -882,8 +884,6 @@ http、server、location
 
 ### 5.7.2 AIO系统调用
 
-### 5.7.1  sendfile系统调用
-
 **语法：**
 
 aio on|off
@@ -1042,7 +1042,7 @@ resolver 127.0.0.1 192.0.2.1;
 
 ## 6.1 负载均衡基本配置
 
-### 6.1.1 upstram
+### 6.1.1 upstream
 
 **语法：**
 

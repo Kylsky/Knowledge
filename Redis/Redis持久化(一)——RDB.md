@@ -40,7 +40,7 @@ save指令会阻塞住redis主进程，这意味着所有发往redis的请求都
 
 redis.conf文件中配置了RDB产生的.dump文件的路径，找到dump文件后，将文件移动到redis安装目录后启动redis服务即可。
 
-可以在redis客户端中通过执行config get dir获取redis安装目录。
+可以在redis客户端中通过执行**config get dir**获取redis安装目录。
 
 
 
