@@ -394,7 +394,7 @@ public class TransportClientConfig extends ElasticsearchConfigurationSupport {
 
 ElasticsearchOperations的实现类，使用的是High Level Client。
 
-```
+```java
 @Configuration
 public class RestClientConfig extends AbstractElasticsearchConfiguration {
   @Override

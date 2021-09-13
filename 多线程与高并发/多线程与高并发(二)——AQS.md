@@ -67,6 +67,7 @@ static final class NonfairSync extends Sync {
             else
                 acquire(1);
         }
+}
 ```
 
 不难发现，NonfairSync的lock方法中，通过了compareAndSetState方法，也就是CAS操作来获取锁，CAS操作一般由unsafe来执行操作，由于unsafe的实现为本地方法，通过C来实现，所以不讨论，这里暂时了解到CAS这一步。回过头到上面if/else语句，若获取锁，则判定当前线程获得锁。若没有获取到锁，则调用acquire方法，接下来主要讨论acquire做了什么。
