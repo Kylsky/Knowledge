@@ -1,10 +1,6 @@
 # MySQL架构及日志
 
-## 一、MySQL基本架构图
-
-![img](http://119.23.64.10/site/pic/MySQLArchi.jpg)
-
-
+## 一、MySQL基本架构
 
 ### 连接器
 

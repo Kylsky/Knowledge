@@ -514,6 +514,7 @@ final Node<K,V>[] resize() {
 //      &  =17 0001 0001    1+oldCap = 1+16
 
 //元素在重新计算hash之后，因为n变为2倍，那么n-1的mask范围在高位多1bit(红色)，因此新的index就会发生这样的变化：
+// 0000 0001->0001 0001
 ````
 
 ### treeifyBin(Node<K,V>[] tab,int hash)

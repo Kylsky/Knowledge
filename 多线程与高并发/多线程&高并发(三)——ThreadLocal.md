@@ -99,9 +99,9 @@ public class TestPhantomReference {
 }
 ```
 
-在运行代码之前，将jvm的最大内存和最小内存设置问20M。PhantomReference通过虚引用指向一个对象和一个引用队列，当引用被回收，则将引用放入一个队列中。虚引用的值通过get方法是无法获取的。
+在运行代码之前，将jvm的最大内存和最小内存设置为20M。PhantomReference通过虚引用指向一个对象和一个引用队列，当引用被回收，则将引用放入一个队列中。虚引用的值通过get方法是无法获取的。
 
-使用场景，NIO使用DirectByteBuffer直接操作对外内存，是JVM无法回收的，因此可以通过虚引用监测**DirectByteBuffer**，若需要回收则创建虚引用并回收，通过Queue(队列)通知操作系统需要回收的内存。
+使用场景，NIO使用DirectByteBuffer直接操作对堆外内存，是JVM无法回收的，因此可以通过虚引用监测**DirectByteBuffer**，若需要回收则创建虚引用并回收，通过Queue(队列)通知操作系统需要回收的内存。
 
 
 

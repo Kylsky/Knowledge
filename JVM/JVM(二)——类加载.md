@@ -22,6 +22,11 @@
 
 **3.resolution**
 
+```
+关于符号引用和直接引用，可以参考：
+https://www.cnblogs.com/shinubi/articles/6116993.html
+```
+
 将符号引用转换为内存地址。解析动作主要针对**类或接口、字段、类方法、接口方法、方法类型、方法句柄**和**调用点限定符**这7类符号引用进行。
 
 
@@ -94,7 +99,7 @@ protected Class<?> loadClass(String name, boolean resolve)
 
 ## 三、双亲委派机制
 
-当一个class被需要时，jvm向当前class对应的类加载器检查class是否位于类加载器的缓存中，若类加载器显示不存在，则jvm向当前类加载器的父类加载器检查，若存在则返回，否则依此类推直到检查到BootStrap ClassLoader，当处理到顶层类加载器BootStrap ClassLoader，BootStrap会根据自己加载的类库判断是否存在class信息，若有则加载class文件并返回，若无则向低一层类加载器查询，以此类推，直到检查到class并加载返回或最终没有检擦到class抛出ClassNotFound异常。流程图如下：
+当一个class被需要时，jvm向当前class对应的类加载器检查class是否位于该类加载器的缓存中，若类加载器显示不存在，则jvm向当前类加载器的父类加载器检查，若存在则返回，否则依此类推直到检查到BootStrap ClassLoader，当处理到顶层类加载器BootStrap ClassLoader，BootStrap会根据自己加载的类库判断是否存在class信息，若有则加载class文件并返回，若无则向低一层类加载器查询，以此类推，直到检查到class并加载返回或最终没有检擦到class抛出ClassNotFound异常。流程图如下：
 
 ![classloading2](http://kyle-pic.oss-cn-hangzhou.aliyuncs.com/img/classloading2.jpg)
 

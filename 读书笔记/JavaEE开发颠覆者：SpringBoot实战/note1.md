@@ -43,7 +43,11 @@ public class DemoEvent extends ApplicationEvent{      
 ## 1.2 事件监听器
 
 ```java
-@Component  public class DemoListener implements ApplicationListener<DemoEvent> {//1         public void onApplicationEvent(DemoEvent event) {//2 
+@Component  
+public class DemoListener implements ApplicationListener<DemoEvent> {
+  		//1         
+  public void onApplicationEvent(DemoEvent event) {
+    	//2 
     	String msg = event.getMsg();                   
     	System.out.println("我(bean-demoListener)接收到了bean-demoPublisher发布的消息:"+ msg);         
 	}     
@@ -118,7 +122,7 @@ public class TaskExecutorConfig implements AsyncConfigurer{
     
     @Override  
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() { 
-		return null;
+			return null;
     }
 }
 ```

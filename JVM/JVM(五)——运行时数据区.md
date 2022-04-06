@@ -4,7 +4,7 @@
 
 ### 1.1 Program Counter(程序计数器)
 
-程 序 计 数 器（ Program Counter Register） 是 一 块 较 小 的 内 存 空 间， 它 可 以 看 作 是 当 前 线 程 所 执 行 的 字 节 码 的 行 号 指 示 器。
+程 序 计 数 器（ Program Counter Register） 是 一 块 较 小 的 内 存 空 间， 它 可 以 看 作 是 当 前 线 程 所 执 行 的 字 节 码 的 行 号 指 示 器。	
 
 如 果 线 程 正 在 执 行 的 是 一 个 Java 方 法， 这 个 计 数 器 记 录 的 是 正 在 执 行 的 虚 拟 机 字 节 码 指 令 的 地 址； 如 果 正 在 执 行 的 是 本 地（ Native） 方 法， 这 个 计 数 器 值 则 应 为 空（ Undefined）。 此 内 存 区 域 是 唯 一 一 个 在《 Java 虚 拟 机 规 范》 中 没 有 规 定 任 何 OutOfMemoryError 情 况 的 区 域。
 

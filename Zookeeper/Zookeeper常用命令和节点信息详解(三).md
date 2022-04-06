@@ -92,7 +92,18 @@ numChildren = 5
 
 为节点授权，zookeeper支持5种权限：CREATE(c)、READ(r)、WRITE(w)、DELETE(d)、ADMIN(a)
 
-**acl**：acl由三部分构成：1为scheme，2为user，3为permission，一般情况下表示为scheme:id:permissions。因此在授权之前，需要先使用addAuth指令为节点添加一个user
+**acl**：acl由三部分构成：1为scheme，2为user，3为permission，一般情况下表示为"scheme : id : permissions"。因此在授权之前，需要先使用addAuth指令为节点添加一个user
+
+```
+# addAuth见第17点
+setAcl /com/yeelo world:user1:123456:cdrwa
+# 用于验证
+setAcl /com/yeelo digest:user1:123456::cdra
+# ip
+setAcl /com/yeelo ip:192.168.1.111:cdraw
+```
+
+
 
 ### 7.setquota -n|-b val path
 
@@ -144,7 +155,13 @@ numChildren = 5
 
 ### *17.addauth scheme auth
 
-addauth命令用于节点认证，使用方式：如addauth digest username:password
+addauth命令用于节点认证，使用方式：如
+
+```
+addauth digest user1:123456
+```
+
+
 
 ### 18.quit
 
@@ -185,7 +202,7 @@ numChildren = 0
 
 ### cZxid
 
-zookeeper的事务是按照顺序执行的，cZid共有64个位，c表示create，末32位用来表示节点创建的事务id，前32位是用来标识leader关系是否改变
+创建节点时的事务id，zookeeper的事务是按照顺序执行的，cZid共有64个位，c表示create，末32位用来表示节点创建的事务id，前32位是用来标识leader关系是否改变
 
 ### cTime
 
@@ -218,3 +235,33 @@ zookeeper的事务是按照顺序执行的，cZid共有64个位，c表示create�
 ### ehpemeralOwner
 
 临时归属者。若节点属于持久节点，则位0x0，表示没有持有者。若属于临时节点则表示当前节点的持有者的sessionid
+
+
+
+## 其他指令
+
+| 四字命令 | 功能描述                                                     |
+| :------- | :----------------------------------------------------------- |
+| conf     | 3.3.0版本引入的。打印出服务相关配置的详细信息。              |
+| cons     | 3.3.0版本引入的。列出所有连接到这台服务器的客户端全部连接/会话详细信息。包括"接受/发送"的包数量、会话id、操作延迟、最后的操作执行等等信息。 |
+| crst     | 3.3.0版本引入的。重置所有连接的连接和会话统计信息。          |
+| dump     | 列出那些比较重要的会话和临时节点。这个命令只能在leader节点上有用。 |
+| envi     | 打印出服务环境的详细信息。                                   |
+| reqs     | 列出未经处理的请求                                           |
+| ruok     | 测试服务是否处于正确状态。如果确实如此，那么服务返回"imok"，否则不做任何相应。 |
+| stat     | 输出关于性能和连接的客户端的列表。                           |
+| srst     | 重置服务器的统计。                                           |
+| srvr     | 3.3.0版本引入的。列出连接服务器的详细信息                    |
+| wchs     | 3.3.0版本引入的。列出服务器watch的详细信息。                 |
+| wchc     | 3.3.0版本引入的。通过session列出服务器watch的详细信息，它的输出是一个与watch相关的会话的列表。 |
+| wchp     | 3.3.0版本引入的。通过路径列出服务器watch的详细信息。它输出一个与session相关的路径。 |
+| mntr     | 3.4.0版本引入的。输出可用于检测集群健康状态的变量列表        |
+
+
+
+### 使用：
+
+```
+echo [command] | nc [ip] [port]
+```
+
