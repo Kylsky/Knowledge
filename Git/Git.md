@@ -98,6 +98,12 @@ git config --global user.email 752051085@qq.com
 
 取消已经缓存的内容
 
+--hard 将工作区、暂存区、本地仓库内容都重置
+
+--mixed 将暂存区、本地仓库内容都重置
+
+--soft 只将本地仓库内容重置
+
 ### git rm <file>
 
 若使用正常操作删除文件，那么运行git status时会产生Changes not staged for commit提示，要从git中移除某个文件，必须要从已经跟踪的文件清单中移除
